@@ -1,1 +1,0 @@
-# azure_sentinel_data_connectors
