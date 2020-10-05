@@ -26,26 +26,6 @@ days_interval = 1
 url = "https://login.salesforce.com/services/oauth2/token"
 
 
-def main(mytimer: func.TimerRequest) -> None:
-    logging.info(f'Script started')
-    global instance_url, token, headers,customer_id, shared_key,log_type, users
-    users = dict()
-    token = _get_token()[0]
-    instance_url = _get_token()[1]
-    headers = {
-        'Authorization': f'Bearer {token}'
-    }
-    get_users()
-    for line in pull_log_files():
-        csv_file_body = get_file_raw_lines(line["LogFile"])
-        obj_array = csv_to_json(csv_file_body)
-        to_chunks_and_process_message(obj_array)
-    utc_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
-    if mytimer.past_due:
-        logging.info('The timer is past due!')
-    logging.info('Python timer trigger function ran at %s', utc_timestamp)
-
-
 def _get_token():
     params = {
         "grant_type": "password",
@@ -176,6 +156,7 @@ def post_data(customer_id, shared_key, body, log_type):
         print('Accepted')
     else:
         print("Response code: {}".format(response.status_code))
+        logging.info("Response code: {}".format(response.status_code))
         print(sys.getsizeof(body))
 
 
@@ -190,3 +171,23 @@ def to_chunks_and_process_message(obj_array):
 def divide_chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
+
+
+def main(mytimer: func.TimerRequest) -> None:
+    logging.info(f'Script started')
+    global instance_url, token, headers,customer_id, shared_key,log_type, users
+    users = dict()
+    token = _get_token()[0]
+    instance_url = _get_token()[1]
+    headers = {
+        'Authorization': f'Bearer {token}'
+    }
+    get_users()
+    for line in pull_log_files():
+        csv_file_body = get_file_raw_lines(line["LogFile"])
+        obj_array = csv_to_json(csv_file_body)
+        to_chunks_and_process_message(obj_array)
+    utc_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
+    if mytimer.past_due:
+        logging.info('The timer is past due!')
+    logging.info('Python timer trigger function ran at %s', utc_timestamp)
