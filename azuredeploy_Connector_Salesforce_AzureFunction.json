@@ -160,7 +160,7 @@
                         "SalesforceSecurityToken": "[parameters('SalesforceSecurityToken')]",
                         "SalesforceConsumerKey": "[parameters('SalesforceConsumerKey')]",
                         "SalesforceConsumerSecret": "[parameters('SalesforceConsumerSecret')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/bbzr/octa-azure-sentinel-data-connector/blob/master/OctaSentinelConn.zip?raw=true"
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/SalesforceSentinelConn.zip?raw=true"
                     }
                 }
             ]
