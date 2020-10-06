@@ -13,7 +13,7 @@ import azure.functions as func
 
 customer_id = os.environ['WorkspaceID'] 
 shared_key = os.environ['WorkspaceKey']
-log_type = 'salesforce_service_cloud'
+log_type = 'SalesforceServiceCloud'
 user = os.environ['SalesforceUser']
 password = os.environ['SalesforcePass']
 security_token = os.environ['SalesforceSecurityToken']
@@ -42,7 +42,6 @@ def _get_token():
     except Exception as err:
         logging.error(f'Token getting failed. Exiting program. {err}')
         exit()
-token = _get_token()
 
 
 def generate_date():
