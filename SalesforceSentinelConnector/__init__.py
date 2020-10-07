@@ -67,24 +67,31 @@ def pull_log_files():
                 "+FROM+EventLogFile" + \
                 f"+WHERE+LogDate+>+{past_time}"
     try:
+        logging.info('Searching files last modified from {}'.format(past_time))
         r = requests.get(f'{instance_url}{query}', headers=headers)
     except Exception as err:
         logging.error(f'File list getting failed. Exiting program. {err}')
-        exit()
 
     if r.status_code == 200:
         files = json.loads(r.text)['records']
+        logging.info('Total number of files is {}.'.format(len(files)))
         return files
     else:
         logging.error(f'File list getting failed. Exiting program. {r.status_code} {r.text}')
-        exit()
 
 
 def get_file_raw_lines(file_url):
     url = f'{instance_url}{file_url}'
-
-    r = requests.get(url, headers=headers)
-    return r.text.strip().split('\n')
+    try:
+        print('Download file from url {}'.format(url))
+        r = requests.get(url, headers=headers)
+    except Exception as err:
+        logging.error(f'File downloading failed. {err} {file_url}')
+    if r.status_code == 200:
+        logging.info('File successfully downloaded from url {} '.format(url))
+        return r.text.strip().split('\n')
+    else:
+        logging.error(f'File downloading failed. {r.status_code} {r.text} {file_url}')
 
 
 def csv_to_json(csv_file_body):
@@ -99,6 +106,7 @@ def csv_to_json(csv_file_body):
 
 
 def get_users(url=None):
+    logging.info(f'Get Users List.')
     if url is None:
         query = "/services/data/v44.0/query?q=SELECT+Id+,+Email+FROM+User"
     else:
@@ -113,8 +121,7 @@ def get_users(url=None):
             next_url = r.json()['nextRecordsUrl']
             get_users(url=next_url)
     except Exception as err:
-        logging.error(f'Users getting failed. Exiting program. {err}')
-        exit()
+        logging.error(f'Users getting failed. {err}')
 
 
 def enrich_event_with_user_email(event):
@@ -153,6 +160,7 @@ def post_data(customer_id, shared_key, body, log_type):
     response = requests.post(uri,data=body, headers=headers)
     if (response.status_code >= 200 and response.status_code <= 299):
         print('Accepted')
+        logging.info("Chunk was processed(10000 events)")
     else:
         print("Response code: {}".format(response.status_code))
         logging.info("Response code: {}".format(response.status_code))
@@ -160,7 +168,7 @@ def post_data(customer_id, shared_key, body, log_type):
 
 
 def to_chunks_and_process_message(obj_array):
-    n = 4000
+    n = 10000
     x = list(divide_chunks(obj_array, n))
     for line in x:
         body = json.dumps(line)
@@ -183,9 +191,12 @@ def main(mytimer: func.TimerRequest) -> None:
     }
     get_users()
     for line in pull_log_files():
+        logging.info('Started downloading {}'.format(line["LogFile"]))
         csv_file_body = get_file_raw_lines(line["LogFile"])
         obj_array = csv_to_json(csv_file_body)
         to_chunks_and_process_message(obj_array)
+        logging.info('File processed {}'.format(line["LogFile"]))
+    logging.info('Program finished.')
     utc_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
     if mytimer.past_due:
         logging.info('The timer is past due!')
