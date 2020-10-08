@@ -8,6 +8,7 @@ import base64
 import csv
 import os
 import sys
+import tempfile
 import azure.functions as func
 
 
@@ -80,33 +81,45 @@ def pull_log_files():
         logging.error(f'File list getting failed. Exiting program. {r.status_code} {r.text}')
 
 
-def get_file_raw_lines(file_url):
+def get_file_raw_lines(file_url, file_in_tmp_path):
     url = f'{instance_url}{file_url}'
     try:
-        print('Download file from url {}'.format(url))
-        r = requests.get(url, headers=headers)
+        with requests.get(url, stream=True, headers=headers) as r:
+            with open(file_in_tmp_path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=1024*1024):
+                    if chunk:  # filter out keep-alive new chunks
+                        f.write(chunk)
+            if r.status_code == 200:
+                print('File successfully downloaded from url {} '.format(url))
+            else:
+                print('File downloading failed. {r.status_code} {r.text} {file_url}')
     except Exception as err:
-        logging.error(f'File downloading failed. {err} {file_url}')
-    if r.status_code == 200:
-        logging.info('File successfully downloaded from url {} '.format(url))
-        return r.text.strip().split('\n')
-    else:
-        logging.error(f'File downloading failed. {r.status_code} {r.text} {file_url}')
+        print('File downloading failed. {err} {file_url}')
 
 
-def csv_to_json(csv_file_body):
-    field_names = [name.lower() for name in list(csv.reader(csv_file_body))[0]]
+def gen_chunks_to_object(file_in_tmp_path, chunksize=100):
+    field_names = [name.lower() for name in list(csv.reader(open(file_in_tmp_path)))[0]]
     field_names = [x if x != 'type' else 'type_' for x in field_names]
-    reader = csv.DictReader(csv_file_body[1:],fieldnames=field_names)
-    obj_array = []
-    for row in reader:
-        row = enrich_event_with_user_email(row)
-        obj_array.append(row)
-    return(obj_array)
+    reader = csv.DictReader(open(file_in_tmp_path), fieldnames=field_names)
+    chunk = []
+    for index, line in enumerate(reader):
+        if (index % chunksize == 0 and index > 0):
+            yield chunk
+            del chunk[:]
+        chunk.append(line)
+    yield chunk
+
+def gen_chunks(file_in_tmp_path):
+    for chunk in gen_chunks_to_object(file_in_tmp_path, chunksize=10000):
+        obj_array = []
+        for row in chunk:
+            row = enrich_event_with_user_email(row)
+            obj_array.append(row)
+        body = json.dumps(obj_array)
+        post_data(customer_id, shared_key, body, log_type, len(obj_array))
 
 
 def get_users(url=None):
-    logging.info(f'Get Users List.')
     if url is None:
         query = "/services/data/v44.0/query?q=SELECT+Id+,+Email+FROM+User"
     else:
@@ -143,7 +156,7 @@ def build_signature(customer_id, shared_key, date, content_length, method, conte
     return authorization
 
 
-def post_data(customer_id, shared_key, body, log_type):
+def post_data(customer_id, shared_key, body, log_type, chunk_count):
     method = 'POST'
     content_type = 'application/json'
     resource = '/api/logs'
@@ -160,41 +173,29 @@ def post_data(customer_id, shared_key, body, log_type):
     response = requests.post(uri,data=body, headers=headers)
     if (response.status_code >= 200 and response.status_code <= 299):
         print('Accepted')
-        logging.info("Chunk was processed(10000 events)")
+        logging.info("Chunk was processed({} events)".format(chunk_count))
     else:
         print("Response code: {}".format(response.status_code))
-        logging.info("Response code: {}".format(response.status_code))
-        print(sys.getsizeof(body))
-
-
-def to_chunks_and_process_message(obj_array):
-    n = 10000
-    x = list(divide_chunks(obj_array, n))
-    for line in x:
-        body = json.dumps(line)
-        post_data(customer_id, shared_key, body, log_type)
-
-
-def divide_chunks(l, n):
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
+        logging.warn("Response code: {}".format(response.status_code))
 
 
 def main(mytimer: func.TimerRequest) -> None:
     logging.info(f'Script started')
-    global instance_url, token, headers,customer_id, shared_key,log_type, users
+    global instance_url,token,headers,customer_id,shared_key,log_type,users,temp_dir,file_in_tmp_path
     users = dict()
     token = _get_token()[0]
     instance_url = _get_token()[1]
     headers = {
         'Authorization': f'Bearer {token}'
     }
+    temp_dir = tempfile.TemporaryDirectory()
     get_users()
     for line in pull_log_files():
         logging.info('Started downloading {}'.format(line["LogFile"]))
-        csv_file_body = get_file_raw_lines(line["LogFile"])
-        obj_array = csv_to_json(csv_file_body)
-        to_chunks_and_process_message(obj_array)
+        local_filename = line["LogFile"].replace('/', '_').replace(':', '_')
+        file_in_tmp_path = "{}/{}".format(temp_dir.name, local_filename)
+        get_file_raw_lines(line["LogFile"],file_in_tmp_path)
+        gen_chunks(file_in_tmp_path)
         logging.info('File processed {}'.format(line["LogFile"]))
     logging.info('Program finished.')
     utc_timestamp = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
