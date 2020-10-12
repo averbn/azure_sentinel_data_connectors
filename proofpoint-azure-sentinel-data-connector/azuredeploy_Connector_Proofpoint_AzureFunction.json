@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "FunctionName": {
-            "defaultValue": "SalesforceSentinelConn",
+            "defaultValue": "ProofpointSentinelConn",
             "type": "string"
         },
         "WorkspaceID": {
@@ -14,25 +14,13 @@
             "type": "string",
             "defaultValue": "<workspaceKey>"
         },
-        "SalesforceUser": {
+        "ProofpointClusterID": {
             "type": "string",
-            "defaultValue": "<SalesforceUser>"
+            "defaultValue": "<ProofpointClusterID>"
         },
-        "SalesforcePass": {
+        "ProofpointToken": {
             "type": "string",
-            "defaultValue": "<SalesforcePass>"
-        },
-        "SalesforceSecurityToken": {
-            "type": "string",
-            "defaultValue": "<SalesforceSecurityToken>"
-        },
-        "SalesforceConsumerKey": {
-            "type": "string",
-            "defaultValue": "<SalesforceConsumerKey>"
-        },
-        "SalesforceConsumerSecret": {
-            "type": "string",
-            "defaultValue": "<SalesforceConsumerSecret>"
+            "defaultValue": "<ProofpointToken>"
         }
     },
     "variables": {},
@@ -154,12 +142,10 @@
                         "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(parameters('FunctionName')),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', toLower(parameters('FunctionName'))), '2019-06-01').keys[0].value, ';EndpointSuffix=core.windows.net')]",
                         "WorkspaceID": "[parameters('WorkspaceID')]",
                         "WorkspaceKey": "[parameters('WorkspaceKey')]",
-                        "SalesforceUser": "[parameters('SalesforceUser')]",
-                        "SalesforcePass": "[parameters('SalesforcePass')]",
-                        "SalesforceSecurityToken": "[parameters('SalesforceSecurityToken')]",
-                        "SalesforceConsumerKey": "[parameters('SalesforceConsumerKey')]",
-                        "SalesforceConsumerSecret": "[parameters('SalesforceConsumerSecret')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/salesforce-azure-sentinel-data-connector/SalesforceSentinelConn.zip?raw=true"
+                        "ProofpointClusterID": "[parameters('ProofpointClusterID')]",
+                        "ProofpointToken": "[parameters('ProofpointToken')]",
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/salesforce-azure-sentinel-data-connector/ProofpointSentinelConn.zip?raw=true"
+
                     }
                 }
             ]
