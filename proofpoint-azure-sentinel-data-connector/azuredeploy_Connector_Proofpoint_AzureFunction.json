@@ -144,7 +144,7 @@
                         "WorkspaceKey": "[parameters('WorkspaceKey')]",
                         "ProofpointClusterID": "[parameters('ProofpointClusterID')]",
                         "ProofpointToken": "[parameters('ProofpointToken')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/salesforce-azure-sentinel-data-connector/ProofpointSentinelConn.zip?raw=true"
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/proofpoint-azure-sentinel-data-connector/ProofpointSentinelConn.zip?raw=true"
 
                     }
                 }
