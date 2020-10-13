@@ -10,6 +10,7 @@ import hashlib
 import hmac
 import requests
 import azure.functions as func
+import logging
 
 
 customer_id = os.environ['WorkspaceID'] 
@@ -22,7 +23,13 @@ time_period_minutes = 10
 time_delay_minutes = 500
 
 
-def main():
+#def main():
+
+def main(mytimer: func.TimerRequest) -> None:
+    if mytimer.past_due:
+        logging.info('The timer is past due!')
+
+    logging.info('Starting program')
     api = Proofpoint_api()
 
     #api.get_data(event_type='message')
@@ -63,14 +70,14 @@ class Proofpoint_api:
             ws = websocket.create_connection(url, header=header, sslopt={"cert_reqs": ssl.CERT_NONE})
             ws.settimeout(20)
             time.sleep(2)
-            self.logging.info(
-                'Websocket connection established to cluster_id={}, event_type={}'.format(self.cluster_id, event_type))
+            #self.logging.info(
+            #    'Websocket connection established to cluster_id={}, event_type={}'.format(self.cluster_id, event_type))
             print(
                 'Websocket connection established to cluster_id={}, event_type={}'.format(self.cluster_id, event_type))
             return ws
 
         except Exception as err:
-            self.logging.error('Error while connectiong to websocket {}'.format(err))
+            #self.logging.error('Error while connectiong to websocket {}'.format(err))
             print('Error while connectiong to websocket {}'.format(err))
             return None
 
@@ -88,7 +95,8 @@ class Proofpoint_api:
             print(len(chunk))
             obj_array = []
             for row in chunk:
-                obj_array.append(row)
+                y = json.loads(row)
+                obj_array.append(y)
             body = json.dumps(obj_array)
             self.post_data(body,len(obj_array))
 
@@ -119,14 +127,15 @@ class Proofpoint_api:
             'Log-Type': log_type,
             'x-ms-date': rfc1123date
         }
+    
         response = requests.post(uri, data=body, headers=headers)
         if (response.status_code >= 200 and response.status_code <= 299):
             print('Accepted')
-            logging.info("Chunk was processed({} events)".format(chunk_count))
+            #logging.info("Chunk was processed({} events)".format(chunk_count))
             print("Chunk was processed({} events)".format(chunk_count))
         else:
             print("Response code: {}".format(response.status_code))
-            logging.warn("Response code: {}".format(response.status_code))
+            #logging.warn("Response code: {}".format(response.status_code))
 
 
     def get_data(self, event_type=None):
@@ -146,14 +155,14 @@ class Proofpoint_api:
                 except websocket._exceptions.WebSocketTimeoutException:
                     break
                 except Exception as err:
-                    self.logging.error('Error while receiving data: {}'.format(err))
+                    #self.logging.error('Error while receiving data: {}'.format(err))
                     print('Error while receiving data: {}'.format(err))
                     break
             if sent_events > 0:
                 self.gen_chunks(events,event_type)
-            self.logging.info('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
-                                                                                            self.after_time,
-                                                                                            self.before_time))
+            #self.logging.info('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
+            #                                                                                self.after_time,
+            #                                                                                self.before_time))
             print('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
                                                                                             self.after_time,
                                                                                            self.before_time))
