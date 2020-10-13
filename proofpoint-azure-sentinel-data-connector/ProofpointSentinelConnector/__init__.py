@@ -19,11 +19,9 @@ log_type = 'ProofpointPOD'
 
 cluster_id = os.environ['ProofpointClusterID']
 _token = os.environ['ProofpointToken']
-time_period_minutes = 10
-time_delay_minutes = 500
+time_period_minutes = 59
+time_delay_minutes = 60
 
-
-#def main():
 
 def main(mytimer: func.TimerRequest) -> None:
     if mytimer.past_due:
@@ -32,7 +30,7 @@ def main(mytimer: func.TimerRequest) -> None:
     logging.info('Starting program')
     api = Proofpoint_api()
 
-    #api.get_data(event_type='message')
+    api.get_data(event_type='message')
     api.get_data(event_type='maillog')
 
 
@@ -70,14 +68,14 @@ class Proofpoint_api:
             ws = websocket.create_connection(url, header=header, sslopt={"cert_reqs": ssl.CERT_NONE})
             ws.settimeout(20)
             time.sleep(2)
-            #self.logging.info(
-            #    'Websocket connection established to cluster_id={}, event_type={}'.format(self.cluster_id, event_type))
+            self.logging.info(
+                'Websocket connection established to cluster_id={}, event_type={}'.format(self.cluster_id, event_type))
             print(
                 'Websocket connection established to cluster_id={}, event_type={}'.format(self.cluster_id, event_type))
             return ws
 
         except Exception as err:
-            #self.logging.error('Error while connectiong to websocket {}'.format(err))
+            self.logging.error('Error while connectiong to websocket {}'.format(err))
             print('Error while connectiong to websocket {}'.format(err))
             return None
 
@@ -91,12 +89,13 @@ class Proofpoint_api:
         yield chunk
 
     def gen_chunks(self, data,event_type):
-        for chunk in self.gen_chunks_to_object(data, chunksize=1000):
+        for chunk in self.gen_chunks_to_object(data, chunksize=10000):
             print(len(chunk))
             obj_array = []
             for row in chunk:
-                y = json.loads(row)
-                obj_array.append(y)
+                if row == None or row == '':
+                    y = json.loads(row)
+                    obj_array.append(y)
             body = json.dumps(obj_array)
             self.post_data(body,len(obj_array))
 
@@ -130,12 +129,11 @@ class Proofpoint_api:
     
         response = requests.post(uri, data=body, headers=headers)
         if (response.status_code >= 200 and response.status_code <= 299):
-            print('Accepted')
-            #logging.info("Chunk was processed({} events)".format(chunk_count))
+            logging.info("Chunk was processed({} events)".format(chunk_count))
             print("Chunk was processed({} events)".format(chunk_count))
         else:
             print("Response code: {}".format(response.status_code))
-            #logging.warn("Response code: {}".format(response.status_code))
+            logging.warn("Response code: {}".format(response.status_code))
 
 
     def get_data(self, event_type=None):
@@ -155,19 +153,16 @@ class Proofpoint_api:
                 except websocket._exceptions.WebSocketTimeoutException:
                     break
                 except Exception as err:
-                    #self.logging.error('Error while receiving data: {}'.format(err))
+                    self.logging.error('Error while receiving data: {}'.format(err))
                     print('Error while receiving data: {}'.format(err))
                     break
             if sent_events > 0:
                 self.gen_chunks(events,event_type)
-            #self.logging.info('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
-            #                                                                                self.after_time,
-            #                                                                                self.before_time))
+            self.logging.info('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
+                                                                                            self.after_time,
+                                                                                            self.before_time))
             print('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
                                                                                             self.after_time,
                                                                                            self.before_time))
         else:
             exit(1)
-
-#if __name__ == "__main__":
-#    main()
