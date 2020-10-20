@@ -15,14 +15,14 @@ import logging
 
 customer_id = os.environ['WorkspaceID'] 
 shared_key = os.environ['WorkspaceKey']
-log_type = 'ProofpointPOD'
+#log_type = 'ProofpointPOD'
 
 cluster_id = os.environ['ProofpointClusterID']
 _token = os.environ['ProofpointToken']
-time_period_minutes = 59
-time_delay_minutes = 60
-
-
+time_period_minutes = 5
+time_delay_minutes = 6000
+event_types = ["message"]
+#maillog
 def main(mytimer: func.TimerRequest) -> None:
     if mytimer.past_due:
         logging.info('The timer is past due!')
@@ -30,9 +30,8 @@ def main(mytimer: func.TimerRequest) -> None:
     logging.info('Starting program')
     api = Proofpoint_api()
 
-    api.get_data(event_type='message')
-    api.get_data(event_type='maillog')
-
+    for evt_type in event_types:
+        api.get_data(event_type=evt_type)
 
 class Proofpoint_api:
     def __init__(self):
@@ -68,14 +67,14 @@ class Proofpoint_api:
             ws = websocket.create_connection(url, header=header, sslopt={"cert_reqs": ssl.CERT_NONE})
             ws.settimeout(20)
             time.sleep(2)
-            self.logging.info(
+            logging.info(
                 'Websocket connection established to cluster_id={}, event_type={}'.format(self.cluster_id, event_type))
             print(
                 'Websocket connection established to cluster_id={}, event_type={}'.format(self.cluster_id, event_type))
             return ws
 
         except Exception as err:
-            self.logging.error('Error while connectiong to websocket {}'.format(err))
+            logging.error('Error while connectiong to websocket {}'.format(err))
             print('Error while connectiong to websocket {}'.format(err))
             return None
 
@@ -88,16 +87,18 @@ class Proofpoint_api:
             chunk.append(line)
         yield chunk
 
-    def gen_chunks(self, data,event_type):
+    def gen_chunks(self,data,event_type):
         for chunk in self.gen_chunks_to_object(data, chunksize=10000):
             print(len(chunk))
             obj_array = []
             for row in chunk:
-                if row == None or row == '':
+                if row != None and row != '':
                     y = json.loads(row)
+                    y.update({'event_type': event_type})
+                    #print(y)
                     obj_array.append(y)
             body = json.dumps(obj_array)
-            self.post_data(body,len(obj_array))
+            self.post_data(body,len(obj_array),event_type)
 
 
     def build_signature(self, date, content_length, method, content_type, resource):
@@ -111,7 +112,7 @@ class Proofpoint_api:
         return authorization
 
 
-    def post_data(self,body,chunk_count):
+    def post_data(self,body,chunk_count,event_type):
         method = 'POST'
         content_type = 'application/json'
         resource = '/api/logs'
@@ -123,7 +124,7 @@ class Proofpoint_api:
         headers = {
             'content-type': content_type,
             'Authorization': signature,
-            'Log-Type': log_type,
+            'Log-Type': 'ProofpointPOD_' + event_type,
             'x-ms-date': rfc1123date
         }
     
@@ -150,19 +151,22 @@ class Proofpoint_api:
                     data = ws.recv()
                     events.append(data)
                     sent_events += 1
+                    #print(len(events))
+                    if len(events) > 5000:
+                        self.gen_chunks(events,event_type)
+                        events = []
                 except websocket._exceptions.WebSocketTimeoutException:
                     break
                 except Exception as err:
-                    self.logging.error('Error while receiving data: {}'.format(err))
+                    logging.error('Error while receiving data: {}'.format(err))
                     print('Error while receiving data: {}'.format(err))
                     break
             if sent_events > 0:
                 self.gen_chunks(events,event_type)
-            self.logging.info('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
+           
+        logging.info('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
                                                                                             self.after_time,
                                                                                             self.before_time))
-            print('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
+        print('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
                                                                                             self.after_time,
                                                                                            self.before_time))
-        else:
-            exit(1)
