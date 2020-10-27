@@ -57,9 +57,9 @@ def get_result(activity,start_time, end_time):
     if result_activities == None or len(result_activities) == 0:
         print("Logs not founded for {} activity".format(activity))
         logging.info("Logs not founded for {} activity".format(activity))
-        logging.info("Activity - {}, {} events was processed)".format(activity, len(result_activities))
+        logging.info("Activity - {}, {} events was processed)".format(activity, len(result_activities)))
     else:
-        logging.info("Activity - {}, {} events was processed)".format(activity, len(result_activities))
+        logging.info("Activity - {}, {} events was processed)".format(activity, len(result_activities)))
         return result_activities
 
 def build_signature(customer_id, shared_key, date, content_length, method, content_type, resource):
