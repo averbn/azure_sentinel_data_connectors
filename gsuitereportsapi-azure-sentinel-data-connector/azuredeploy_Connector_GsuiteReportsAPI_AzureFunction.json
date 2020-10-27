@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "FunctionName": {
-            "defaultValue": "GsuiteReportsAPISentinelConn",
+            "defaultValue": "GsuiteSentinelConn",
             "type": "string"
         },
         "WorkspaceID": {
@@ -14,7 +14,7 @@
             "type": "string",
             "defaultValue": "<workspaceKey>"
         },
-        "GooglePickeString": {
+        "GooglePickleString": {
             "type": "string",
             "defaultValue": "<GooglePickleString>"
         }

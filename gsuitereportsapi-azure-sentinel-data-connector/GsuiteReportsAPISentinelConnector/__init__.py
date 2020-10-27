@@ -57,9 +57,9 @@ def get_result(activity,start_time, end_time):
     if result_activities == None or len(result_activities) == 0:
         print("Logs not founded for {} activity".format(activity))
         logging.info("Logs not founded for {} activity".format(activity))
-        logging.info("Activity - {}, {} events was processed)".format(activity, len(result_activities)))
+        logging.info("Activity - {}, {} events was processed)".format(activity, len(result_activities))
     else:
-        logging.info("Activity - {}, {} events was processed)".format(activity, len(result_activities)))
+        logging.info("Activity - {}, {} events was processed)".format(activity, len(result_activities))
         return result_activities
 
 def build_signature(customer_id, shared_key, date, content_length, method, content_type, resource):
@@ -93,6 +93,32 @@ def post_data(customer_id, shared_key, body, log_type):
     else:
         logging.warn("Response code: {}".format(response.status_code))
 
+
+def expand_data(obj):
+    for event in obj:
+        for nested in event["events"]:
+            if 'name' in nested:
+                event.update({'event_name': nested["name"]})
+            if 'type' in nested:
+                event.update({'event_type': nested["type"]})
+            if 'parameters' in nested:
+                for parameter in nested["parameters"]:
+                    if 'value' in parameter:
+                        event.update({parameter["name"]: parameter["value"]})
+                    if 'boolValue' in parameter:
+                        event.update({parameter["name"]: parameter["boolValue"]})
+                    if 'multiValue' in parameter:
+                        event.update({parameter["name"]: parameter["multiValue"]})
+                    if 'multiMessageValue' in parameter:
+                        event.update({parameter["name"]: parameter["multiMessageValue"]})
+                    if 'multiIntValue' in parameter:
+                        event.update({parameter["name"]: parameter["multiIntValue"]})
+                    if 'messageValue' in parameter:
+                        event.update({parameter["name"]: parameter["messageValue"]})
+                    if 'intValue' in parameter:
+                        event.update({parameter["name"]: parameter["intValue"]})
+    return obj
+
 def main(mytimer: func.TimerRequest) -> None:
     if mytimer.past_due:
         logging.info('The timer is past due!')
@@ -108,7 +134,7 @@ def main(mytimer: func.TimerRequest) -> None:
     for line in activities:
         result_obj = get_result(line,start_time,end_time)
         if result_obj is not None:
-            for event in result_obj:
-                event.update({'event_type': line})
+            result_obj = expand_data(result_obj)
+            #print(result_obj)
             body = json.dumps(result_obj)
             post_data(customer_id, shared_key, body, "GSuite_ReportsAPI_"+line)
