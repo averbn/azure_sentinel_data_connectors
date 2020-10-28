@@ -137,7 +137,7 @@ class Proofpoint_api:
                     events.append(data)
                     sent_events += 1
                     #print(len(events))
-                    if len(events) > 5000:
+                    if len(events) > 500:
                         self.gen_chunks(events,event_type)
                         events = []
                 except websocket._exceptions.WebSocketTimeoutException:
