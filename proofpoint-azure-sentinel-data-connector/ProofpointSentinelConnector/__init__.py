@@ -15,45 +15,37 @@ import logging
 
 customer_id = os.environ['WorkspaceID'] 
 shared_key = os.environ['WorkspaceKey']
-#log_type = 'ProofpointPOD'
-
 cluster_id = os.environ['ProofpointClusterID']
 _token = os.environ['ProofpointToken']
-time_period_minutes = 5
-time_delay_minutes = 6000
-event_types = ["message"]
-#maillog
+time_delay_minutes = 60
+event_types = ["maillog","message"]
+
 def main(mytimer: func.TimerRequest) -> None:
     if mytimer.past_due:
         logging.info('The timer is past due!')
 
     logging.info('Starting program')
+    if datetime.datetime.utcnow().minute < 2:
+        time.sleep(120)
     api = Proofpoint_api()
-
     for evt_type in event_types:
         api.get_data(event_type=evt_type)
 
 class Proofpoint_api:
     def __init__(self):
-
         self.cluster_id = cluster_id
         self._token = _token
-        self.time_period_minutes = int(time_period_minutes)
         self.time_delay_minutes = int(time_delay_minutes)
-        self.gen_timeframe(time_period_minutes=self.time_period_minutes, time_delay_minutes=self.time_delay_minutes)
+        self.gen_timeframe(time_delay_minutes=self.time_delay_minutes)
 
-    def gen_timeframe(self, time_period_minutes, time_delay_minutes):
+    def gen_timeframe(self, time_delay_minutes):
         before_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=time_delay_minutes)
-        after_time = before_time - datetime.timedelta(minutes=time_period_minutes)
-        self.before_time = before_time.strftime("%Y-%m-%dT%H:%M:00.000000")
-        self.after_time = after_time.strftime("%Y-%m-%dT%H:%M:00.000000")
-
-
+        self.before_time = before_time.strftime("%Y-%m-%dT%H:59:00.000000")
+        self.after_time = before_time.strftime("%Y-%m-%dT%H:01:00.000000")
 
     def set_websocket_conn(self, event_type):
-
         url = f"wss://logstream.proofpoint.com:443/v1/stream?cid={self.cluster_id}&type={event_type}&sinceTime={self.after_time}&toTime={self.before_time}"
-        print(url)
+        logging.info('Opening Websocket logstream {}'.format(url))
         # defining headers for websocket connection (do not change this)
         header = {
             "Connection": "Upgrade",
@@ -62,7 +54,6 @@ class Proofpoint_api:
             "Sec-WebSocket-Key": "SGVsbG8sIHdvcmxkIQ==",
             "Sec-WebSocket-Version": "13"
         }
-
         try:
             ws = websocket.create_connection(url, header=header, sslopt={"cert_reqs": ssl.CERT_NONE})
             ws.settimeout(20)
@@ -100,7 +91,6 @@ class Proofpoint_api:
             body = json.dumps(obj_array)
             self.post_data(body,len(obj_array),event_type)
 
-
     def build_signature(self, date, content_length, method, content_type, resource):
         x_headers = 'x-ms-date:' + date
         string_to_hash = method + "\n" + str(content_length) + "\n" + content_type + "\n" + x_headers + "\n" + resource
@@ -110,7 +100,6 @@ class Proofpoint_api:
             hmac.new(decoded_key, bytes_to_hash, digestmod=hashlib.sha256).digest()).decode()
         authorization = "SharedKey {}:{}".format(customer_id, encoded_hash)
         return authorization
-
 
     def post_data(self,body,chunk_count,event_type):
         method = 'POST'
@@ -126,8 +115,7 @@ class Proofpoint_api:
             'Authorization': signature,
             'Log-Type': 'ProofpointPOD_' + event_type,
             'x-ms-date': rfc1123date
-        }
-    
+        }    
         response = requests.post(uri, data=body, headers=headers)
         if (response.status_code >= 200 and response.status_code <= 299):
             logging.info("Chunk was processed({} events)".format(chunk_count))
@@ -136,12 +124,9 @@ class Proofpoint_api:
             print("Response code: {}".format(response.status_code))
             logging.warn("Response code: {}".format(response.status_code))
 
-
     def get_data(self, event_type=None):
         sent_events = 0
-
         ws = self.set_websocket_conn(event_type)
-
         time.sleep(2)
         print(ws)
         if ws is not None:
@@ -162,8 +147,7 @@ class Proofpoint_api:
                     print('Error while receiving data: {}'.format(err))
                     break
             if sent_events > 0:
-                self.gen_chunks(events,event_type)
-           
+                self.gen_chunks(events,event_type)           
         logging.info('Total events sent: {}. Type: {}. Period(UTC): {} - {}'.format(sent_events, event_type,
                                                                                             self.after_time,
                                                                                             self.before_time))
