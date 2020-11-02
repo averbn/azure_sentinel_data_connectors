@@ -1,8 +1,8 @@
 {
     "id": "SalesforceServiceCloud",
     "title": "Salesforce Service Cloud (Preview)",
-    "publisher": "SOC Prime",
-    "descriptionMarkdown": "The Salesforce Service Cloud data connector provides the capability to ingest information about your Salesforce operational events into Azure Sentinel through the REST API. The connector provides ability to review events in your org on an accelerated basis, get event log files in hourly increments for recent activity. Hourly event log files can give you quicker visibility into security anomalies and custom code performance issues (https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/event_log_file_hourly_overview.htm) ",
+    "publisher": "Salesforce",
+    "descriptionMarkdown": "The Salesforce Service Cloud data connector provides the capability to ingest information about your Salesforce operational events into Azure Sentinel through the REST API. The connector provides ability to review events in your org on an accelerated basis, get [event log files](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/event_log_file_hourly_overview.htm) in hourly increments for recent activity.",
     "graphQueries": [
         {
             "metricName": "Total data received",
@@ -79,11 +79,11 @@
         },
         {
             "title": "",
-            "description": "**STEP 1 - Configuration steps for the Salesforce Lightning Platform REST API**\n\n1. See the link https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/quickstart.htm and follow the instructions for obtaining credentials. \n2. On the **Set Up Authorization** step choose **Session ID Authorization** method.\n3. You must provide your client id, client secret, username, and password with user security token." 
+            "description": "**STEP 1 - Configuration steps for the Salesforce Lightning Platform REST API**\n\n1. See the [link](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/quickstart.htm) and follow the instructions for obtaining Salesforce API Authorization credentials. \n2. On the **Set Up Authorization** step choose **Session ID Authorization** method.\n3. You must provide your client id, client secret, username, and password with user security token." 
         },
         {
             "title": "",
-            "description": "**STEP 2 - Automated deployment of the connector using an ARM Tempate to deploy the Salesforce Service Cloud data connector and the associated Azure Function**.\n\nUse your **Workspace Id** and **Workspace Key** for deployment.", 
+            "description": "**STEP 2 - Choose ONE from the following two deployment options to deploy the connector and the associated Azure Function**\n\n>**IMPORTANT:** Before deploying the Salesforce Service Cloud data connector, have the Workspace ID and Workspace Primary Key (can be copied from the following), as well as the Salesforce API Authorization credentials, readily available.", 
             "instructions":[
                 {
                     "parameters": {
@@ -106,8 +106,21 @@
             ]
         },
         {
-            "title": "Azure Resource Manager (ARM) Template",
-            "description": "1. Click the **Deploy to Azure** button below. \n\n\t[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/sentinelsalesforceazuredeploy)\n2. Select the preferred **Subscription**, **Resource Group** and **Location**. \n3. Enter the **Workspace ID**, **Workspace Key**, **Salesforce API Username**, **Salesforce API Password**, **Salesforce Security Token**, **Salesforce Consumer Key**, **Salesforce Consumer Secret** and deploy."
+            "title": "Option 1 - Azure Resource Manager (ARM) Template",
+            "description": "Use this method for automated deployment of the Salesforce Service Cloud data connector using an ARM Tempate.\n\n1. Click the **Deploy to Azure** button below. \n\n\t[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/sentinelsalesforceazuredeploy)\n2. Select the preferred **Subscription**, **Resource Group** and **Location**. \n3. Enter the **Workspace ID**, **Workspace Key**, **Salesforce API Username**, **Salesforce API Password**, **Salesforce Security Token**, **Salesforce Consumer Key**, **Salesforce Consumer Secret** and deploy."
+        },
+        {
+            "title": "Option 2 - Manual Deployment of Azure Functions (Deploy via VS Code)",
+            "description": "Use the following step-by-step instructions to deploy the Quayls VM connector manually with Azure Functions."
+        },
+        {
+            "title": "",
+            "description": "**1. Deploy a Function App via VS Code**\n\n> NOTE:You will need to prepare VS code for Azure function development. See [link](https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-first-function-powershell#prerequisites)\n\n1. Download the Zip file of the Azure Funciton app from Github.\n2. Extract to a location on your local host.\n3. Open VS Code.\n4. Click File -> Open Folder.\n5. Select the top level folder from extracted files.\n6. Click Azure Functions: Deploy to function app. You maybe asked to sign in to Azure.\n7. Click Create New function app in Azure (advanced).\n8. Provide a unique name like \"SFSCxxxx\". Press Enter.\n9. Select runtime stack: Python 3.8.\n10. Hosting plan: click Consumption.\n11. Click Create new Resource Group or select existing.\n12. Click Create a new storage Account or select existing.\n13. Click Create new Application Insights resource.\n14. Pick a location to deploy in.\n15. Deployment will begin.\n16. Wait for the deployment to complete.\n17. Go to the Azure Portal."
+        },
+        {
+            "title": "",
+            "description": "**2. Configure the Function App**\n\n1. In the Function App, select the Function App Name and select **Configuration**.\n2. In the **Application settings** tab, select **+ New application setting**.\n3. Add each of the following application settings individually, with their respective string values (case-sensitive): \n\t\tSalesforceUser\n\t\tSalesforcePass\n\t\tSalesforceSecurityToken\n\t\tSalesforceConsumerKey\n\t\tSalesforceConsumerSecret\n\t\tWorkspaceID\n\t\tWorkspaceKey\n3. Once all application settings have been entered, click **Save**."
+                                                                                                                                                                                                                                                                                                                                                                
         }
     ]
 }
