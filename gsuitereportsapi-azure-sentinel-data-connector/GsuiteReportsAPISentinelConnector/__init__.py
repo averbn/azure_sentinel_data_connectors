@@ -86,7 +86,6 @@ def post_data(customer_id, shared_key, body, log_type):
         'Log-Type': log_type,
         'x-ms-date': rfc1123date
     }
-    #print(body)
     response = requests.post(uri,data=body, headers=headers)
     if (response.status_code >= 200 and response.status_code <= 299):
         logging.info("Logs with {} activity was processed into Azure".format(log_type))
@@ -119,22 +118,33 @@ def expand_data(obj):
                         event.update({parameter["name"]: parameter["intValue"]})
     return obj
 
+def gen_chunks_to_object(data,chunksize=100):
+    chunk = []
+    for index, line in enumerate(data):
+        if (index % chunksize == 0 and index > 0):
+            yield chunk
+            del chunk[:]
+        chunk.append(line)
+    yield chunk
+
+def gen_chunks(data,log_type):
+    for chunk in gen_chunks_to_object(data, chunksize=10000):
+        obj_array = []
+        body = json.dumps(chunk)
+        post_data(customer_id, shared_key,body,log_type)
+
 def main(mytimer: func.TimerRequest) -> None:
     if mytimer.past_due:
         logging.info('The timer is past due!')
-
     logging.info('Starting program')
     global creds
     creds = get_credentials()
     start_time = generate_date()[0]
     end_time = generate_date()[1]
-    print(start_time, end_time)
     logging.info('Data processing. Period(UTC): {} - {}'.format(start_time,end_time))
 
     for line in activities:
         result_obj = get_result(line,start_time,end_time)
         if result_obj is not None:
             result_obj = expand_data(result_obj)
-            #print(result_obj)
-            body = json.dumps(result_obj)
-            post_data(customer_id, shared_key, body, "GSuite_ReportsAPI_"+line)
+            gen_chunks(result_obj, "GSuite_ReportsAPI_"+line)
