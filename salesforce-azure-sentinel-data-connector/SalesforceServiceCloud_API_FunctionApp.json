@@ -14,7 +14,7 @@
     "sampleQueries": [
         {
             "description" : "Last Salesforce Service Cloud EventLogFile Events",
-            "query": "SalesforceServiceCloud_CL\n | sort by TimeGenerated desc"
+            "query": "SalesforceServiceCloud\n | sort by TimeGenerated desc"
         }
      ],
     "dataTypes": [
