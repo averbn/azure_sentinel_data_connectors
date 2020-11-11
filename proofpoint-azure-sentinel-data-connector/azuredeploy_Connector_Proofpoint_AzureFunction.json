@@ -11,7 +11,7 @@
             "defaultValue": "<workspaceID>"
         },
         "WorkspaceKey": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "<workspaceKey>"
         },
         "ProofpointClusterID": {
@@ -19,7 +19,7 @@
             "defaultValue": "<ProofpointClusterID>"
         },
         "ProofpointToken": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "<ProofpointToken>"
         }
     },

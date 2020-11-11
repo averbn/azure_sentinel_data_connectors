@@ -11,11 +11,11 @@
             "defaultValue": "<workspaceID>"
         },
         "WorkspaceKey": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "<workspaceKey>"
         },
         "GooglePickleString": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "<GooglePickleString>"
         }
     },

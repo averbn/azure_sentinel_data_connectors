@@ -11,7 +11,7 @@
             "defaultValue": "<workspaceID>"
         },
         "WorkspaceKey": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "<workspaceKey>"
         },
         "SalesforceUser": {
@@ -19,19 +19,19 @@
             "defaultValue": "<SalesforceUser>"
         },
         "SalesforcePass": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "<SalesforcePass>"
         },
         "SalesforceSecurityToken": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "<SalesforceSecurityToken>"
         },
         "SalesforceConsumerKey": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "<SalesforceConsumerKey>"
         },
         "SalesforceConsumerSecret": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "<SalesforceConsumerSecret>"
         }
     },
