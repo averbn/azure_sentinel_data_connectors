@@ -100,9 +100,9 @@
             "description": "**STEP 1 - Configuration steps for the Proofpoint Websocket API**\n\n1. Proofpoint Websocket API service requires Remote Syslog Forwarding license. Please refer to the [documentation](https://proofpointcommunities.force.com/community/s/article/Proofpoint-on-Demand-Pod-Log-API) on how to enable and check PoD Log API. \n2. You must provide your cluster id and security token." 
         },
         {
+           
             "title": "",
-            "description": "Choose ONE from the following two deployment options to deploy the connector and the associated Azure Function**\n\n>**IMPORTANT:** Before deploying the Proofpoint On Demand Email Security data connector, have the Workspace ID and Workspace Primary Key (can be copied from the following), as well as the Proofpoint Websocket API Credentials, readily available.", 
-            "description": "**STEP 2 - Automated deployment of the connector using an ARM Tempate to deploy the Proofpoint On Demand Email Security data connector and the associated Azure Function**.\n\nUse your **Workspace Id** and **Workspace Key** for deployment.", 
+            "description": "**STEP 2 - Choose ONE from the following two deployment options to deploy the connector and the associated Azure Function**\n\n>**IMPORTANT:** Before deploying the Cisco Umbrella data connector, have the Workspace ID and Workspace Primary Key (can be copied from the following), as well as the Amazon S3 REST API Authorization credentials, readily available.",
             "instructions":[
                 {
                     "parameters": {
