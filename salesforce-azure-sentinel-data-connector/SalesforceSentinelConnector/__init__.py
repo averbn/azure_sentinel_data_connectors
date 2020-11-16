@@ -72,9 +72,21 @@ def pull_log_files():
         r = requests.get(f'{instance_url}{query}', headers=headers)
     except Exception as err:
         logging.error(f'File list getting failed. Exiting program. {err}')
-
     if r.status_code == 200:
         files = json.loads(r.text)['records']
+        done_status = json.loads(r.text)['done']
+        while done_status is False:
+            query = json.loads(r.text)['nextRecordsUrl']
+            try:
+                r = requests.get(f'{instance_url}{query}', headers=headers)
+            except Exception as err:
+                logging.error(f'File list getting failed. Exiting program. {err}')
+            if r.status_code == 200:
+                done_status = json.loads(r.text)['done']
+                for file in json.loads(r.text)['records']:
+                    files.append(file)
+            else:
+                done_status = True
         logging.info('Total number of files is {}.'.format(len(files)))
         return files
     else:
@@ -110,7 +122,7 @@ def gen_chunks_to_object(file_in_tmp_path, chunksize=100):
     yield chunk
 
 def gen_chunks(file_in_tmp_path):
-    for chunk in gen_chunks_to_object(file_in_tmp_path, chunksize=10000):
+    for chunk in gen_chunks_to_object(file_in_tmp_path, chunksize=2000):
         obj_array = []
         for row in chunk:
             row = enrich_event_with_user_email(row)
