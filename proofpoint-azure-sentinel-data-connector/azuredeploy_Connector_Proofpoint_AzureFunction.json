@@ -2,6 +2,13 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "SSLVerification": {
+            "defaultValue": false,
+            "type": "bool",
+            "metadata": {
+                "description": "Boolean flag to turn on and off of Websocket SSL verification."
+            }
+        },
         "FunctionName": {
             "defaultValue": "PpointConn",
             "type": "string"
@@ -146,6 +153,7 @@
                         "WorkspaceKey": "[parameters('WorkspaceKey')]",
                         "ProofpointClusterID": "[parameters('ProofpointClusterID')]",
                         "ProofpointToken": "[parameters('ProofpointToken')]",
+                        "SSLVerification": "[parameters('SSLVerification')]"
                         "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/proofpoint-azure-sentinel-data-connector/ProofpointSentinelConn.zip?raw=true"
 
                     }
