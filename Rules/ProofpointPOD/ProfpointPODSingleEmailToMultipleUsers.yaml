@@ -1,0 +1,32 @@
+id: XXXXXXXXXXXXXXXXX
+name: ProofpointPOD - SPAM, Single Email to 50 (and more) Users per 1 hour
+description: |
+  'Detects possible SPAM, Single Email to 50 (and more) Users per 1 hour.'
+severity: Low
+requiredDataConnectors:
+  - connectorId: ProofpointPOD
+    dataTypes:
+      - ProofpointPOD_maillog_CL
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - InitialAccess
+query: |
+let timeframe = 1h;
+let excluded_src_addr_list = dynamic(["noreply@user.com"
+                                                ]);
+ProofpointPOD
+| where TimeGenerated >= ago(timeframe)
+| where isnotempty(SrcUserUpn) and isnotempty(DstUserUpn) and isnotempty(MsgNormalizedHeaderSubject)
+| where SrcUserUpn !in~ (excluded_src_addr_list)
+| summarize Count=count(DstUserUpn), timestamp=min(TimeGenerated) by MsgNormalizedHeaderSubject, SrcUserUpn
+| where Count > 50
+| project timestamp, Count, MsgNormalizedHeaderSubject, SrcUserUpn
+| extend UserCustomEntity = SrcUserUpn
+entityMappings:
+  - entityType: Account
+    fieldMappings:
+      - identifier: FullName
+        columnName: AccountCustomEntity

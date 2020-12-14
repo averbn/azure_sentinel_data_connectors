@@ -1,0 +1,33 @@
+id: XXXXXXXXXXXXXXXXX
+name: ProofpointPOD - Message placed to the Block URL Quarantine Folder
+description: |
+  'Message placed to the Block URL Quarantine Folder.'
+severity: Medium
+requiredDataConnectors:
+  - connectorId: ProofpointPOD
+    dataTypes:
+      - ProofpointPOD_maillog_CL
+queryFrequency: 1d
+queryPeriod: 1d
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - InitialAccess
+query: |
+let timeframe = 1d;
+ProofpointPOD 
+| where TimeGenerated > ago(timeframe)
+| where isnotempty(FilterQuarantineRule)
+| where FilterQuarantineRule has "blockurl"
+| extend Message = "Message placed to the Block URL Quarantine Folder"
+| project Message, SrcUserUpn, DstUserUpn, SrcIpAddr, TimeGenerated
+| extend AccountCustomEntity = SrcUserUpn, IpCustomEntity = SrcIpAddr
+entityMappings:
+  - entityType: Account
+    fieldMappings:
+      - identifier: FullName
+        columnName: AccountCustomEntity
+  - entityType: IP
+    fieldMappings:
+      - identifier: Address
+        columnName: IPCustomEntity
