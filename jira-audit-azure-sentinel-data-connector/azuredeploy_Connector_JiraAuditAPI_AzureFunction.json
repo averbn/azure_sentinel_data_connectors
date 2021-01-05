@@ -151,7 +151,7 @@
                         "JiraAccessToken": "[parameters('JiraAccessToken')]",
                         "JiraUsername": "[parameters('JiraUsername')]",
                         "JiraHomeSiteName": "[parameters('JiraHomeSiteName')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/jira-audit-sentinel-data-connector/JiraAuditAPISentinelConn.zip?raw=true"
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/jira-audit-azure-sentinel-data-connector/JiraAuditAPISentinelConn.zip?raw=true"
                     }
                 }
             ]
