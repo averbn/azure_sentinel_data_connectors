@@ -6,7 +6,6 @@ import tempfile
 import os
 import gzip
 import time
-from filesplit import FileSplit
 import base64
 import hashlib
 import hmac
@@ -63,7 +62,7 @@ def download_message_files(msg):
         return False
 
 def check_damaged_archive(file_path):
-    chunksize = 10000000  # 10 Mbytes
+    chunksize = 1024*1024  # 10 Mbytes
     with gzip.open(file_path, 'rb') as f:
         try:
             while f.read(chunksize) != '':
@@ -72,7 +71,11 @@ def check_damaged_archive(file_path):
             return False
 
 def process_file(file_path):
+    global processed_messages_success, processed_messages_failed
+    processed_messages_success = 0
+    processed_messages_failed = 0
     size = 1024*1024
+    # unzip archive to temp file
     out_tmp_file_path = file_path.replace(".gz", ".tmp")
     with gzip.open(file_path, 'rb') as f_in:
         with open(out_tmp_file_path, 'wb') as f_out:
@@ -81,34 +84,30 @@ def process_file(file_path):
                 if not data:
                     break
                 f_out.write(data)
-    out_path = os.path.dirname(file_path)
-    fs = FileSplit(file=out_tmp_file_path, splitsize=20*1024*1024, output_dir=out_path) ## 20 Mb for 1 split chunk
-    fs.split(include_header=False, callback=cb_rename_tmp_to_json)
-    chunk_result = process_chunks(out_path)
-    logging.info("File {} processed. {} events - successfully, {} events - failed.".format(file_path,chunk_result[0],chunk_result[1]))
     os.remove(file_path)
-
-def process_chunks(path):
-    global processed_messages_success, processed_messages_failed
-    processed_messages_success = 0
-    processed_messages_failed = 0
     threads = []
-    for file in os.listdir(path):
-        if file.endswith(".json"):
-            data = []
-            with open(os.path.join(path, file)) as json_file:
-                logging.info("Processing chunk file: {}.".format(json_file.name))
-                for line in json_file:
-                    data.append(json.loads(line))
-            os.remove(json_file.name)
-            chunk_count = len(data)
-            data = json.dumps(data)
-            t = threading.Thread(target=post_data,args=(data,chunk_count))
+    with open(out_tmp_file_path) as file_handler:
+        for data_chunk in split_chunks(file_handler):
+            chunk_size = len(data_chunk)
+            logging.info("Processing data chunk of file {} with {} events.".format(out_tmp_file_path, chunk_size))
+            data = json.dumps(data_chunk)
+            t = threading.Thread(target=post_data, args=(data, chunk_size))
             threads.append(t)
             t.start()
     for t in threads:
         t.join()
-    return processed_messages_success,processed_messages_failed
+    logging.info("File {} processed. {} events - successfully, {} events - failed.".format(file_path, processed_messages_success,processed_messages_failed))
+    os.remove(out_tmp_file_path)
+
+def split_chunks(file_handler, chunk_size=15000):
+    chunk = []
+    for line in file_handler:
+        chunk.append(json.loads(line))
+        if len(chunk) == chunk_size:
+            yield chunk
+            chunk = []
+    if chunk:
+        yield chunk
 
 def build_signature(customer_id, shared_key, date, content_length, method, content_type, resource):
     x_headers = 'x-ms-date:' + date
