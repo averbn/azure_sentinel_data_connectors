@@ -9,24 +9,27 @@ import hashlib
 import os
 import tempfile
 import logging
+from .state_manager import StateManager
 
 customer_id = os.environ['WorkspaceID'] 
 shared_key = os.environ['WorkspaceKey']
 jira_token = os.environ['JiraAccessToken']
 jira_username = os.environ['JiraUsername']
 jira_homesite_name = os.environ['JiraHomeSiteName']
+connection_string = os.environ['AzureWebJobsStorage']
 log_type = 'Jira_Audit'
 jira_uri_audit = "https://" + jira_homesite_name + ".atlassian.net/rest/api/3/auditing/record"
 
 def generate_date():
     current_time = datetime.datetime.utcnow().replace(second=0, microsecond=0) - datetime.timedelta(minutes=10)
-    try:
-        past_time = os.environ["jira_time_last_point"]
+    state = StateManager(connection_string=connection_string)
+    past_time = state.get()
+    if past_time is not None:
         logging.info("The last time point is: {}".format(past_time))
-    except:
+    else:
         logging.info("There is no last time point, trying to get events for last hour.")
         past_time = (current_time - datetime.timedelta(minutes=60)).strftime("%Y-%m-%dT%H:%M:%SZ")
-        os.environ["jira_time_last_point"] = current_time.strftime("%Y-%m-%dT%H:%M:%SZ")
+        state.post(current_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
     return (past_time, current_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
 
 
