@@ -10,115 +10,115 @@
          "Type":"String"
       },
       {
-         "Name":"sm_msgid_g",
+         "Name":"SmMsgid",
          "Type":"String"
       },
       {
-         "Name":"pps_cid_s",
+         "Name":"PpsCid",
          "Type":"String"
       },
       {
-         "Name":"pps_agent_s",
+         "Name":"PpsAgent",
          "Type":"String"
       },
       {
-         "Name":"id_s",
+         "Name":"Id",
          "Type":"String"
       },
       {
-         "Name":"sm_msgid_s",
+         "Name":"EventUid",
          "Type":"String"
       },
       {
-         "Name":"sm_nrcpts_s",
+         "Name":"SmNrcpts",
          "Type":"String"
       },
       {
-         "Name":"sm_sizeBytes_s",
+         "Name":"NetworkBytes",
          "Type":"String"
       },
       {
-         "Name":"sm_auth_s",
+         "Name":"SmAuth",
          "Type":"String"
       },
       {
-         "Name":"sm_tls_verify_s",
+         "Name":"TlsEstablished",
          "Type":"String"
       },
       {
-         "Name":"sm_relay_s",
+         "Name":"SrcNatIpAddr",
          "Type":"String"
       },
       {
-         "Name":"sm_daemon_s",
+         "Name":"ProcessName",
          "Type":"String"
       },
       {
-         "Name":"sm_proto_s",
+         "Name":"NetworkProtocol",
          "Type":"String"
       },
       {
-         "Name":"sm_from_s",
+         "Name":"SrcUserUpn",
          "Type":"String"
       },
       {
-         "Name":"sm_class_s",
+         "Name":"SmClass",
          "Type":"String"
       },
       {
-         "Name":"sm_qid_s",
+         "Name":"SmQid",
          "Type":"String"
       },
       {
-         "Name":"ts_t",
+         "Name":"EventOriginalTime",
          "Type":"DateTime"
       },
       {
-         "Name":"data_s",
+         "Name":"EventOriginalMessage",
          "Type":"String"
       },
       {
-         "Name":"metadata_origin_data_agent_s",
+         "Name":"MetadataOriginDataAgent",
          "Type":"String"
       },
       {
-         "Name":"metadata_origin_data_cid_s",
+         "Name":"MetadataOriginDataCid",
          "Type":"String"
       },
       {
-         "Name":"event_type_s",
+         "Name":"EventType",
          "Type":"String"
       },
       {
-         "Name":"sm_mailer_s",
+         "Name":"SmMailer",
          "Type":"String"
       },
       {
-         "Name":"sm_stat_s",
+         "Name":"NetworkConnectionStateDetailed",
          "Type":"String"
       },
       {
-         "Name":"sm_dsn_s",
+         "Name":"SmDsn",
          "Type":"String"
       },
       {
-         "Name":"sm_to_s",
+         "Name":"DstUserUpn",
          "Type":"String"
       },
       {
-         "Name":"sm_delay_s",
+         "Name":"NetworkDuration",
          "Type":"String"
       },
       {
-         "Name":"sm_pri_s",
+         "Name":"SmPri",
          "Type":"String"
       },
       {
-         "Name":"sm_xdelay_s",
+         "Name":"SmXdelay",
          "Type":"String"
       },
       {
-         "Name":"sm_ctladdr_s",
+         "Name":"SmCtladdr",
          "Type":"String"
       }
    ]

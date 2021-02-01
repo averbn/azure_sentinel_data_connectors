@@ -10,431 +10,431 @@
          "Type":"String"
       },
       {
-         "Name":"filter_modules_urldefense_counts_noRewriteIsLargeMsgPartSize_d",
+         "Name":"FilterModulesUrldefenseCountsNoRewriteIsLargeMsgPartSize",
          "Type":"Double"
       },
       {
-         "Name":"pps_agent_s",
+         "Name":"SrcDvcHostname",
          "Type":"String"
       },
       {
-         "Name":"pps_version_s",
+         "Name":"PpsVersion",
          "Type":"String"
       },
       {
-         "Name":"pps_cid_s",
+         "Name":"PpsCid",
          "Type":"String"
       },
       {
-         "Name":"msgParts_s",
+         "Name":"MsgParts",
          "Type":"String"
       },
       {
-         "Name":"metadata_origin_data_agent_s",
+         "Name":"MetadataOriginDataAgent",
          "Type":"String"
       },
       {
-         "Name":"metadata_origin_data_version_s",
+         "Name":"MetadataOriginDataVersion",
          "Type":"String"
       },
       {
-         "Name":"metadata_origin_data_cid_s",
+         "Name":"MetadataOriginDataCid",
          "Type":"String"
       },
       {
-         "Name":"ts_t",
+         "Name":"EventOriginalTime",
          "Type":"DateTime"
       },
       {
-         "Name":"connection_tls_inbound_cipher_s",
+         "Name":"TlsCipher",
          "Type":"String"
       },
       {
-         "Name":"connection_tls_inbound_cipherBits_d",
+         "Name":"TlsCipherBits",
          "Type":"Double"
       },
       {
-         "Name":"connection_tls_inbound_version_s",
+         "Name":"TlsVersion",
          "Type":"String"
       },
       {
-         "Name":"connection_ip_s",
+         "Name":"SrcIpAddr",
          "Type":"String"
       },
       {
-         "Name":"connection_sid_s",
+         "Name":"NetworkSessionId",
          "Type":"String"
       },
       {
-         "Name":"connection_host_s",
+         "Name":"SrcDvcHostname",
          "Type":"String"
       },
       {
-         "Name":"connection_country_s",
+         "Name":"SrcGeoCountry",
          "Type":"String"
       },
       {
-         "Name":"connection_helo_s",
+         "Name":"ConnectionHelo",
          "Type":"String"
       },
       {
-         "Name":"connection_protocol_s",
+         "Name":"NetworkProtocol",
          "Type":"String"
       },
       {
-         "Name":"connection_resolveStatus_s",
+         "Name":"NetworkConnectionState",
          "Type":"String"
       },
       {
-         "Name":"msg_sizeBytes_d",
+         "Name":"NetworkBytes",
          "Type":"Double"
       },
       {
-         "Name":"msg_lang_s",
+         "Name":"MsgLang",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_subject_s",
+         "Name":"MsgNormalizedHeaderSubject",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_message_id_s",
+         "Name":"MsgNormalizedHeaderMessageId",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_to_s",
+         "Name":"MsgNormalizedHeaderTo",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_toHashed_s",
+         "Name":"MsgNormalizedHeadertoHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_from_s",
+         "Name":"MsgNormalizedHeaderFrom",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_fromHashed_s",
+         "Name":"MsgNormalizedHeaderFromHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_header_from_s",
+         "Name":"MsgNormalizedHeaderFrom",
          "Type":"String"
       },
       {
-         "Name":"msg_header_fromHashed_s",
+         "Name":"MsgNormalizedHeaderFromHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_header_message_id_s",
+         "Name":"MsgHeaderMessageId",
          "Type":"String"
       },
       {
-         "Name":"msg_header_subject_s",
+         "Name":"MsgHeaderSubject",
          "Type":"String"
       },
       {
-         "Name":"msg_header_to_s",
+         "Name":"MsgHeaderTo",
          "Type":"String"
       },
       {
-         "Name":"msg_header_toHashed_s",
+         "Name":"MsgHeaderToHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_parsedAddresses_fromHashed_s",
+         "Name":"MsgParsedAddressesFromHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_parsedAddresses_from_s",
+         "Name":"MsgParsedAddressesFrom",
          "Type":"String"
       },
       {
-         "Name":"msg_parsedAddresses_toHashed_s",
+         "Name":"MsgParsedAddressesToHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_parsedAddresses_to_s",
+         "Name":"MsgParsedAddressesTo",
          "Type":"String"
       },
       {
-         "Name":"filter_durationSecs_d",
+         "Name":"NetworkDuration",
          "Type":"Double"
       },
       {
-         "Name":"filter_actions_s",
+         "Name":"FilterActions",
          "Type":"String"
       },
       {
-         "Name":"filter_routes_s",
+         "Name":"FilterRoutes",
          "Type":"String"
       },
       {
-         "Name":"filter_qid_s",
+         "Name":"FilterQid",
          "Type":"String"
       },
       {
-         "Name":"filter_startTime_t",
+         "Name":"EventStartTime",
          "Type":"DateTime"
       },
       {
-         "Name":"filter_routeDirection_s",
+         "Name":"NetworkDirection",
          "Type":"String"
       },
       {
-         "Name":"filter_quarantine_rule_s",
+         "Name":"FilterQuarantineRule",
          "Type":"String"
       },
       {
-         "Name":"filter_quarantine_folder_s",
+         "Name":"FilterQuarantineFolder",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_dmarc_srvid_s",
+         "Name":"FilterModulesDmarcSrvid",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_dmarc_records_s",
+         "Name":"FilterModulesDmarcRecords",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_dmarc_filterdResult_s",
+         "Name":"FilterModulesDmarcFilterdResult",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_dmarc_authResults_s",
+         "Name":"FilterModulesDmarcAuthResults",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_spf_domain_s",
+         "Name":"FilterModulesSpfDomain",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_spf_result_s",
+         "Name":"FilterModulesSpfResult",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_spam_triggeredClassifier_s",
+         "Name":"FilterModulesSpamTriggeredClassifier",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_spam_safeBlockedListMatches_s",
+         "Name":"FilterModulesSpamSafeBlockedListMatches",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_spam_version_engine_s",
+         "Name":"FilterModulesSpamVersionEngine",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_spam_version_definitions_s",
+         "Name":"FilterModulesSpamVersionDefinitions",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_spam_scores_overall_d",
+         "Name":"FilterModulesSpamScoresOverall",
          "Type":"Double"
       },
       {
-         "Name":"filter_modules_spam_scores_engine_d",
+         "Name":"FilterModulesSpamScoresEngine",
          "Type":"Double"
       },
       {
-         "Name":"filter_modules_spam_scores_classifiers_s",
+         "Name":"FilterModulesSpamScoresClassifiers",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_spam_langs_s",
+         "Name":"FilterModulesSpamLangs",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_urldefense_version_engine_s",
+         "Name":"FilterModulesUrldefenseVersionEngine",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_urldefense_counts_unique_d",
+         "Name":"FilterModulesUrldefenseCountsUnique",
          "Type":"Double"
       },
       {
-         "Name":"filter_modules_urldefense_counts_rewritten_d",
+         "Name":"FilterModulesUrldefenseCountsRewritten",
          "Type":"Double"
       },
       {
-         "Name":"filter_modules_urldefense_counts_total_d",
+         "Name":"FilterModulesUrldefenseCountsTotal",
          "Type":"Double"
       },
       {
-         "Name":"filter_modules_dkimv_s",
+         "Name":"FilterModulesDkimv",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_pdr_v2_response_s",
+         "Name":"FilterModulesPdrV2Response",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_zerohour_score_s",
+         "Name":"FilterModulesZerohourScore",
          "Type":"String"
       },
       {
-         "Name":"filter_disposition_s",
+         "Name":"FilterDisposition",
          "Type":"String"
       },
       {
-         "Name":"filter_suborgs_rcpts_s",
+         "Name":"FilterSuborgsRcpts",
          "Type":"String"
       },
       {
-         "Name":"filter_suborgs_sender_s",
+         "Name":"FilterSuborgsSender",
          "Type":"String"
       },
       {
-         "Name":"filter_msgSizeBytes_d",
+         "Name":"FilterMsgSizeBytes",
          "Type":"Double"
       },
       {
-         "Name":"filter_verified_rcptsHashed_s",
+         "Name":"FilterVerifiedRcptsHashed",
          "Type":"String"
       },
       {
-         "Name":"filter_verified_rcpts_s",
+         "Name":"FilterVerifiedRcpts",
          "Type":"String"
       },
       {
-         "Name":"guid_s",
+         "Name":"Guid",
          "Type":"String"
       },
       {
-         "Name":"envelope_rcptsHashed_s",
+         "Name":"EnvelopeRcptsHashed",
          "Type":"String"
       },
       {
-         "Name":"envelope_rcpts_s",
+         "Name":"DstUserUpn",
          "Type":"String"
       },
       {
-         "Name":"envelope_fromHashed_s",
+         "Name":"EnvelopeFromHashed",
          "Type":"String"
       },
       {
-         "Name":"envelope_from_s",
+         "Name":"SrcUserUpn",
          "Type":"String"
       },
       {
-         "Name":"event_type_s",
+         "Name":"EventType",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_return_pathHashed_s",
+         "Name":"MsgNormalizedHeaderReturnPathHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_x_mailer_s",
+         "Name":"MsgNormalizedHeaderXMailer",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_return_path_s",
+         "Name":"MsgNormalizedHeaderReturnPath",
          "Type":"String"
       },
       {
-         "Name":"msg_header_x_mailer_s",
+         "Name":"MsgHeaderXMailer",
          "Type":"String"
       },
       {
-         "Name":"msg_header_return_pathHashed_s",
+         "Name":"MsgHeaderReturnPathHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_header_return_path_s",
+         "Name":"MsgHeaderReturnPath",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_spam_charsets_s",
+         "Name":"FilterModulesSpamCharsets",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_dmarc_alignment_s",
+         "Name":"FilterModulesDmarcAlignment",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_x_originating_ip_s",
+         "Name":"MsgNormalizedHeaderXOriginatingIp",
          "Type":"String"
       },
       {
-         "Name":"msg_header_x_originating_ip_s",
+         "Name":"MsgHeaderXOriginatingIp",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_reply_to_s",
+         "Name":"MsgNormalizedHeaderReplyTo",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_reply_toHashed_s",
+         "Name":"MsgNormalizedHeaderReplyToHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_header_reply_toHashed_s",
+         "Name":"MsgHeaderReplyToHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_header_reply_to_s",
+         "Name":"MsgHeaderReplyTo",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_urldefense_counts_noRewriteIsEmail_d",
+         "Name":"FilterModulesUrldefenseCountsNoRewriteIsEmail",
          "Type":"Double"
       },
       {
-         "Name":"filter_modules_pdr_v2_rscore_d",
+         "Name":"FilterModulesPdrV2Rscore",
          "Type":"Double"
       },
       {
-         "Name":"filter_origGuid_s",
+         "Name":"FilterOrigGuid",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_cc_s",
+         "Name":"MsgNormalizedHeaderCc",
          "Type":"String"
       },
       {
-         "Name":"msg_normalizedHeader_ccHashed_s",
+         "Name":"MsgNormalizedHeaderCcHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_parsedAddresses_ccHashed_s",
+         "Name":"MsgParsedAddressesCcHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_parsedAddresses_cc_s",
+         "Name":"MsgParsedAddressesCc",
          "Type":"String"
       },
       {
-         "Name":"msg_header_ccHashed_s",
+         "Name":"MsgHeaderCcHashed",
          "Type":"String"
       },
       {
-         "Name":"msg_header_cc_s",
+         "Name":"MsgHeaderCc",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_av_virusNames_s",
+         "Name":"FilterModulesAvVirusNames",
          "Type":"String"
       },
       {
-         "Name":"filter_throttleIp_s",
+         "Name":"FilterThrottleIp",
          "Type":"String"
       },
       {
-         "Name":"filter_modules_urldefense_counts_noRewriteIsUnsupportedScheme_d",
+         "Name":"FilterModulesUrldefenseCountsNoRewriteIsUnsupportedScheme",
          "Type":"Double"
       },
       {
-         "Name":"filter_modules_urldefense_counts_noRewriteIsSchemeless_d",
+         "Name":"FilterModulesUrldefenseCountsNoRewriteIsSchemeless",
          "Type":"Double"
       },
       {
-         "Name":"filter_modules_urldefense_counts_noRewriteIsMaxLengthExceeded_d",
+         "Name":"FilterModulesUrldefenseCountsNoRewriteIsMaxLengthExceeded",
          "Type":"Double"
       },
       {
-         "Name":"filter_modules_urldefense_counts_noRewriteIsExcludedDomain_d",
+         "Name":"FilterModulesUrldefenseCountsNoRewriteIsExcludedDomain",
          "Type":"Double"
       }
    ]
