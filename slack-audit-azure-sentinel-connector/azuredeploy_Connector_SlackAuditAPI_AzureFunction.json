@@ -144,7 +144,7 @@
                         "WorkspaceID": "[parameters('WorkspaceID')]",
                         "WorkspaceKey": "[parameters('WorkspaceKey')]",
                         "SlackAPIBearerToken": "[parameters('SlackAPIBearerToken')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/slack-audit-azure-sentinel-connector/SlackAuditAPISentinelConn.zip?raw=true"
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://aka.ms/sentinel-SlackAuditAPI-functionapp"
                     }
                 }
             ]
