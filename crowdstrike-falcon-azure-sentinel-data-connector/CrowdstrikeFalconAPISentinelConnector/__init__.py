@@ -13,6 +13,8 @@ import requests
 import threading
 import azure.functions as func
 import logging
+import re
+import sys
 
 customer_id = os.environ['WorkspaceID'] 
 shared_key = os.environ['WorkspaceKey']
@@ -23,6 +25,16 @@ AWS_REGION_NAME = os.environ['AWS_REGION_NAME']
 QUEUE_URL = os.environ['QUEUE_URL']
 VISIBILITY_TIMEOUT = 60
 temp_dir = tempfile.TemporaryDirectory()
+
+if 'logAnalyticsUri' in os.environ:
+    logAnalyticsUri = os.environ['logAnalyticsUri']
+    pattern = r"https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$"
+    match = re.match(pattern,str(logAnalyticsUri))
+    if not match:
+        logging.error("Invalid Log Analytics Uri.")
+        sys.exit()
+else:
+    logAnalyticsUri = "https://" + customer_id + ".ods.opinsights.azure.com"
 
 def get_sqs_messages():
     logging.info("Creating SQS connection")
@@ -126,14 +138,14 @@ def post_data(body,chunk_count):
     rfc1123date = datetime.datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
     content_length = len(body)
     signature = build_signature(customer_id, shared_key, rfc1123date, content_length, method, content_type, resource)
-    uri = 'https://' + customer_id + '.ods.opinsights.azure.com' + resource + '?api-version=2016-04-01'
+    logAnalyticsUri = logAnalyticsUri + resource + "?api-version=2016-04-01"
     headers = {
         'content-type': content_type,
         'Authorization': signature,
         'Log-Type': log_type,
         'x-ms-date': rfc1123date
     }
-    response = requests.post(uri,data=body, headers=headers)
+    response = requests.post(logAnalyticsUri,data=body, headers=headers)
     if (response.status_code >= 200 and response.status_code <= 299):
         processed_messages_success = processed_messages_success + chunk_count
         logging.info("Chunk with {} events was processed and uploaded to Azure".format(chunk_count))
@@ -159,9 +171,8 @@ def main(mytimer: func.TimerRequest)  -> None:
     if mytimer.past_due:
         logging.info('The timer is past due!')
     logging.info('Starting program')
-    while True:
-        global files_for_handling
-        files_for_handling = []
-        get_sqs_messages()
-        process_message_files()
-        time.sleep(1)
+    global files_for_handling
+    files_for_handling = []
+    get_sqs_messages()
+    process_message_files()
+    sys.exit()
