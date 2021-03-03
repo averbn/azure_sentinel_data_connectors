@@ -14,7 +14,6 @@ import threading
 import azure.functions as func
 import logging
 import re
-import sys
 
 customer_id = os.environ['WorkspaceID'] 
 shared_key = os.environ['WorkspaceKey']
@@ -27,12 +26,11 @@ VISIBILITY_TIMEOUT = 60
 temp_dir = tempfile.TemporaryDirectory()
 
 if 'logAnalyticsUri' in os.environ:
-    logAnalyticsUri = os.environ['logAnalyticsUri']
-    pattern = r"https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$"
-    match = re.match(pattern,str(logAnalyticsUri))
-    if not match:
-        logging.error("Invalid Log Analytics Uri.")
-        sys.exit()
+   logAnalyticsUri = os.environ['logAnalyticsUri']
+   pattern = r"https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$"
+   match = re.match(pattern,str(logAnalyticsUri))
+   if not match:
+       raise Exception("Invalid Log Analytics Uri.")
 else:
     logAnalyticsUri = "https://" + customer_id + ".ods.opinsights.azure.com"
 
@@ -175,4 +173,3 @@ def main(mytimer: func.TimerRequest)  -> None:
     files_for_handling = []
     get_sqs_messages()
     process_message_files()
-    sys.exit()
