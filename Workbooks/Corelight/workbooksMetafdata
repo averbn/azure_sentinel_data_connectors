@@ -1,0 +1,13 @@
+ {
+    "workbookKey": "CorelightWorkbook",
+    "logoFileName": "corelight.svg",
+    "description": "Gain insights into Cisco Umbrella activities, including the DNS, Proxy and Cloud Firewall data. Workbook shows general information along with threat landscape including categories, blocked destinations and URLs.",
+    "dataTypesDependencies": [ "Corelight_CL" ],
+    "dataConnectorsDependencies": [ "Corelight" ],
+    "previewImagesFileNames": [ "CorelightConnectionsBlack1.png","CorelightConnectionsBlack2.png","CorelightConnectionsWhite1.png","CorelightConnectionsWhite2.png","CorelightDNSBlack1.png","CorelightDNSWhite1.png","CorelightFileBlack1.png","CorelightFileBlack2.png","CorelightFileWhite1.png","CorelightFileWhite2.png","CorelightMainBlack1.png","CorelightMainWhite1.png","CorelightSoftwareBlack1.png","CorelightSoftwareWhite1.png" ],
+    "version": "1.0",
+    "title": "Corelight",
+    "templateRelativePath": "Corelight.json",
+    "subtitle": "",
+    "provider": "Corelight"
+  }
