@@ -8,6 +8,7 @@ import hmac
 import hashlib
 import os
 import logging
+import re
 from .state_manager import StateManager
 
 customer_id = os.environ['WorkspaceID']
@@ -36,7 +37,7 @@ def generate_date():
         logging.info("The last time point is: {}".format(past_time))
     else:
         logging.info("There is no last time point, trying to get events for last hour.")
-        past_time = (current_time - datetime.timedelta(minutes=60000)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        past_time = (current_time - datetime.timedelta(minutes=60)).strftime("%Y-%m-%dT%H:%M:%SZ")
     state.post(current_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
     return (past_time, current_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
 
