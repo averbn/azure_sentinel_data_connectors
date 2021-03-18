@@ -26,7 +26,7 @@ if ((logAnalyticsUri in (None, '') or str(logAnalyticsUri).isspace())):
 pattern = r'https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$'
 match = re.match(pattern,str(logAnalyticsUri))
 if(not match):
-    raise Exception("ProofpointPOD: Invalid Log Analytics Uri.")
+    raise Exception("Zoom: Invalid Log Analytics Uri.")
 
 class Zoom:
     def __init__(self):
@@ -60,7 +60,7 @@ class Zoom:
         else:
             logging.info("There is no last time point, trying to get events for last day.")
             past_time = (current_time_day - datetime.timedelta(days=120)).strftime("%Y-%m-%d")
-        state.post(current_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
+        state.post(current_time.strftime("%Y-%m-%d"))
         return (past_time, current_time_day.strftime("%Y-%m-%d"))
 
     def get_report(self, report_type_suffix,next_page_token = None):
