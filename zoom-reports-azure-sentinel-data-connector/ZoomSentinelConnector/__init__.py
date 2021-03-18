@@ -40,7 +40,6 @@ class Zoom:
                              'Accept': 'application/json',
                              'authorization': "Bearer " + self.jwt_token,
                          }
-        self.connection_string = connection_string
 
     def generate_jwt_token(self):
         payload = {
@@ -52,7 +51,7 @@ class Zoom:
 
     def generate_date(self):
         current_time_day = datetime.datetime.utcnow().replace(second=0, microsecond=0)
-        state = StateManager(connection_string=self.connection_string)
+        state = StateManager(connection_string=connection_string)
         past_time = state.get()
         past_time = None
         if past_time is not None:
