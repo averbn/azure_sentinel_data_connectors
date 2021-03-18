@@ -47,7 +47,7 @@ class Zoom:
             'iss': self.api_key,
             'exp': datetime.datetime.now() + datetime.timedelta(hours=self.jwt_token_exp_hours)
         }
-        jwt_token = jwt.encode(payload, api_secret)
+        jwt_token = jwt.encode(payload, self.api_secret)
         return jwt_token
 
     def generate_date(self):
