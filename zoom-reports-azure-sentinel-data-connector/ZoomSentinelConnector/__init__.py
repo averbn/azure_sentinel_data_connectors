@@ -51,15 +51,14 @@ class Zoom:
 
     def generate_date(self):
         current_time_day = datetime.datetime.utcnow().replace(second=0, microsecond=0)
-        state = StateManager(connection_string=connection_string)
+        state = StateManager(connection_string)
         past_time = state.get()
-        past_time = None
         if past_time is not None:
             logging.info("The last time point is: {}".format(past_time))
         else:
-            logging.info("There is no last time point, trying to get events for last day.")
-            past_time = (current_time_day - datetime.timedelta(days=120)).strftime("%Y-%m-%d")
-        state.post(current_time.strftime("%Y-%m-%d"))
+            logging.info("There is no last time point, trying to get events for last week.")
+            past_time = (current_time_day - datetime.timedelta(days=7)).strftime("%Y-%m-%d")
+        state.post(current_time_day.strftime("%Y-%m-%d"))
         return (past_time, current_time_day.strftime("%Y-%m-%d"))
 
     def get_report(self, report_type_suffix,next_page_token = None):
