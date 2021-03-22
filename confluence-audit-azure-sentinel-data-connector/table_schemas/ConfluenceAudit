@@ -10,6 +10,10 @@
          "Type":"String"
       },
       {
+         "Name":"TimeGenerated",
+         "Type":"DateTime"
+      },
+      {
          "Name":"AuthorUsername",
          "Type":"String"
       },
