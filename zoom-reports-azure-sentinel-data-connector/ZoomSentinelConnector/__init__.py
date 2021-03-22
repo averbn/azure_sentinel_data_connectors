@@ -29,6 +29,7 @@ if(not match):
     raise Exception("Zoom: Invalid Log Analytics Uri.")
 
 class Zoom:
+
     def __init__(self):
         self.api_key = jwt_api_key
         self.api_secret = jwt_api_secret
@@ -97,6 +98,7 @@ class Sentinel:
         self.fail_processed = 0
         self.table_name = table_name
         self.chunksize = chunksize
+        
     def gen_chunks_to_object(self, data, chunksize=100):
         chunk = []
         for index, line in enumerate(data):
