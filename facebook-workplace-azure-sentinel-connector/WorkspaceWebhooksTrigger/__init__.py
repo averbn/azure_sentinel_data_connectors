@@ -26,7 +26,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         if signature_header:
             signature = parse_signature(signature_header)
             hmac = signature['sha1']
-            message = '%s.%s' % (post_data.decode('utf-8'), signature['t'])
+            message = '%s.%s' % (post_data.decode('utf-8'), signature['sha1'])
             print(message)
             logging.info(message)
             computed_hmac = hmac_sha1(message, AppSecret)
