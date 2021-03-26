@@ -1,7 +1,7 @@
 import logging
 import hashlib
 import hmac
-
+import os
 import azure.functions as func
 
 AppSecret = os.environ['WorkplaceAppSecret']
