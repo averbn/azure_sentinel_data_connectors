@@ -7,6 +7,7 @@ import json
 import re
 import base64
 import requests
+import datetime
 
 AppSecret = os.environ['WorkplaceAppSecret']
 VerifyToken = os.environ['WorkplaceVerifyToken']
@@ -20,7 +21,7 @@ if ((logAnalyticsUri in (None, '') or str(logAnalyticsUri).isspace())):
 pattern = r'https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$'
 match = re.match(pattern,str(logAnalyticsUri))
 if(not match):
-    raise Exception("ProofpointPOD: Invalid Log Analytics Uri.")
+    raise Exception("Workplace_Facebook: Invalid Log Analytics Uri.")
 
 def hmac_sha1(message, secret):
     message = bytes(message, 'utf-8')
@@ -92,7 +93,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             logging.info(signature)
             hmac = signature['sha1']
             logging.info(hmac)
-            #message = '%s.%s' % (post_data.decode('utf-8'), signature['sha1'])
             message = post_data.decode('utf-8')
             logging.info(message)
             computed_hmac = hmac_sha1(message, AppSecret)
@@ -101,7 +101,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 logging.error("Request signature invalid. Error code: 400.")
                 return func.HttpResponse("Request signature invalid!", status_code=400)
             else:
-                body = json.dumps(post_data.decode('utf-8'))
+                body = json.dumps(message)
                 logging.info(body)
                 post_data(body)
                 logging.info("200 OK HTTPS")
