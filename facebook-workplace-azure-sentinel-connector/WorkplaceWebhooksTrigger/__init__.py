@@ -102,6 +102,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 return func.HttpResponse("Request signature invalid!", status_code=400)
             else:
                 result = []
+                message = {"object": "workplace_security", "entry": [{"id": "504942447160640", "time": 1617019222, "changes": [{"value": {"actor_community_id": "504942443827307", "actor_scim_company_id": "504942447160640", "actor_id": "100064094363063", "actor_email": "rm@socprime.com", "target_id": "100064094363063", "target_email": "rm@socprime.com", "ip": "165.225.207.52", "timestamp": "2021-03-29T12:00:20+0000", "event": "CUSTOM_INTEGRATION_EDIT", "browser_name": "Firefox", "browser_os": "Mac OS X 10.15", "ip_country": "PL", "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:86.0) Gecko/20100101 Firefox/86.0", "target_community_id": "504942443827307", "target_company_id": "504942447160640", "integration_data": {"custom_integration_name": "1", "custom_integration_status": "INSTALLED"}}, "field": "integrations"}]}]}
                 result.append(json.loads(message))
                 post_data(json.dumps(result))
                 logging.info("200 OK HTTPS")
