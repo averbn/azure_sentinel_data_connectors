@@ -56,7 +56,7 @@ def post_data(body):
     rfc1123date = datetime.datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
     content_length = len(body)
     signature = build_signature(customer_id, shared_key, rfc1123date, content_length, method, content_type, resource)
-    uri = logAnalyticsUri + resource + "?api-version=2016-04-01"
+    uri = 'https://' + customer_id + '.ods.opinsights.azure.com' + resource + '?api-version=2016-04-01'
     headers = {
         'content-type': content_type,
         'Authorization': signature,
@@ -65,10 +65,9 @@ def post_data(body):
     }
     response = requests.post(uri,data=body, headers=headers)
     if (response.status_code >= 200 and response.status_code <= 299):
-        logging.info("Message successfully processed into Azure.")
         return response.status_code
     else:
-        logging.warn("Message is not processed into Azure. Response code: {}".format(response.status_code))
+        logging.warn("Events are not processed into Azure. Response code: {}".format(response.status_code))
         return None
 
 
@@ -101,7 +100,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 logging.error("Request signature invalid. Error code: 400.")
                 return func.HttpResponse("Request signature invalid!", status_code=400)
             else:
-                message = {"object": "workplace_security", "entry": [{"id": "504942447160640", "time": 1617019222, "changes": [{"value": {"actor_community_id": "504942443827307", "actor_scim_company_id": "504942447160640", "actor_id": "100064094363063", "actor_email": "rm@socprime.com", "target_id": "100064094363063", "target_email": "rm@socprime.com", "ip": "165.225.207.52", "timestamp": "2021-03-29T12:00:20+0000", "event": "CUSTOM_INTEGRATION_EDIT", "browser_name": "Firefox", "browser_os": "Mac OS X 10.15", "ip_country": "PL", "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:86.0) Gecko/20100101 Firefox/86.0", "target_community_id": "504942443827307", "target_company_id": "504942447160640", "integration_data": {"custom_integration_name": "1", "custom_integration_status": "INSTALLED"}}, "field": "integrations"}]}]}
+                message = json.loads(message)
                 post_data(json.dumps(message))
                 logging.info("200 OK HTTPS")
                 return func.HttpResponse("200 OK HTTPS", status_code=200)
