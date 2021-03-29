@@ -22,38 +22,12 @@ match = re.match(pattern,str(logAnalyticsUri))
 if(not match):
     raise Exception("ProofpointPOD: Invalid Log Analytics Uri.")
 
+def hmac_sha1(message, secret):
+    message = bytes(message, 'utf-8')
+    secret = bytes(secret, 'utf-8')
+    hash = hmac.new(secret, message, hashlib.sha1)
+    return hash.hexdigest()
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request. Start of processing.')
-
-    method = req.method
-    params = req.params
-    if method == 'GET':
-        hub_mode = params.get("hub.mode")
-        hub_challenge = params.get("hub.challenge")
-        hub_verify_token = params.get("hub.verify_token")
-        if hub_mode == "subscribe" and hub_verify_token == VerifyToken:
-            return func.HttpResponse(hub_challenge, status_code=200)
-        else:
-            return func.HttpResponse("Auth failed", status_code=401)
-    elif method == 'POST':
-        post_data = req.get_body()
-        signature_header = req.headers.get('X-Hub-Signature')
-        if signature_header:
-            signature = parse_signature(signature_header)
-            hmac = signature['sha1']
-            message = '%s.%s' % (post_data.decode('utf-8'), signature['sha1'])
-            computed_hmac = hmac_sha1(message, AppSecret)
-            if hmac != computed_hmac:
-               return func.HttpResponse("Request signature invalid!", status_code=400)
-            else:
-                body = json.dumps(post_data.decode('utf-8'))
-                post_data(body)
-        return func.HttpResponse("200 OK HTTPS", status_code=200)
-    return func.HttpResponse(
-            "HTTP method not supported",
-            status_code=405
-    )
 
 def parse_signature(value):
     parts = value.split('&')
@@ -62,13 +36,6 @@ def parse_signature(value):
         (k, v) = kv.split('=')
         ret[k] = v
     return ret
-
-
-def hmac_sha1(message, secret):
-    message = bytes(message, 'utf-8')
-    secret = bytes(secret, 'utf-8')
-    hash = hmac.new(secret, message, hashlib.sha1)
-    return hash.hexdigest()
 
 
 def build_signature(customer_id, shared_key, date, content_length, method, content_type, resource):
@@ -102,3 +69,37 @@ def post_data(body):
     else:
         logging.warn("Message is not processed into Azure. Response code: {}".format(response.status_code))
         return None
+
+
+def main(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request. Start of processing.')
+
+    method = req.method
+    params = req.params
+    if method == 'GET':
+        hub_mode = params.get("hub.mode")
+        hub_challenge = params.get("hub.challenge")
+        hub_verify_token = params.get("hub.verify_token")
+        if hub_mode == "subscribe" and hub_verify_token == VerifyToken:
+            return func.HttpResponse(hub_challenge, status_code=200)
+        else:
+            return func.HttpResponse("Auth failed", status_code=401)
+    elif method == 'POST':
+        post_data = req.get_body()
+        signature_header = req.headers.get('X-Hub-Signature')
+        if signature_header:
+            signature = parse_signature(signature_header)
+            hmac = signature['sha1']
+            message = '%s.%s' % (post_data.decode('utf-8'), signature['sha1'])
+            computed_hmac = hmac_sha1(message, AppSecret)
+            if hmac != computed_hmac:
+                logging.error("Request signature invalid. Error code: 400.")
+                return func.HttpResponse("Request signature invalid!", status_code=400)
+            else:
+                body = json.dumps(post_data.decode('utf-8'))
+                logging.info(body)
+                post_data(body)
+                logging.info("200 OK HTTPS")
+                return func.HttpResponse("200 OK HTTPS", status_code=200)
+    logging.error("HTTP method not supported. Error code: 405.")
+    return func.HttpResponse("HTTP method not supported", status_code=405)
