@@ -89,9 +89,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         signature_header = req.headers.get('X-Hub-Signature')
         if signature_header:
             signature = parse_signature(signature_header)
+            logging.info(signature)
             hmac = signature['sha1']
-            message = '%s.%s' % (post_data.decode('utf-8'), signature['sha1'])
+            logging.info(hmac)
+            #message = '%s.%s' % (post_data.decode('utf-8'), signature['sha1'])
+            message = post_data.decode('utf-8')
+            logging.info(message)
             computed_hmac = hmac_sha1(message, AppSecret)
+            logging.info(computed_hmac)
             if hmac != computed_hmac:
                 logging.error("Request signature invalid. Error code: 400.")
                 return func.HttpResponse("Request signature invalid!", status_code=400)
