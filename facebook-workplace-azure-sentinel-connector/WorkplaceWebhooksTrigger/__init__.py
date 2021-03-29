@@ -93,7 +93,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             logging.info(signature)
             hmac = signature['sha1']
             logging.info(hmac)
-            message = post_data.decode('utf-8')
+            message = post_data.json()
             logging.info(message)
             computed_hmac = hmac_sha1(message, AppSecret)
             logging.info(computed_hmac)
@@ -101,9 +101,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 logging.error("Request signature invalid. Error code: 400.")
                 return func.HttpResponse("Request signature invalid!", status_code=400)
             else:
-                body = json.loads(message)
-                logging.info(body)
-                post_data(json.dumps(body))
+                post_data(json.dumps(message))
                 logging.info("200 OK HTTPS")
                 return func.HttpResponse("200 OK HTTPS", status_code=200)
     logging.error("HTTP method not supported. Error code: 405.")
