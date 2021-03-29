@@ -101,9 +101,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 logging.error("Request signature invalid. Error code: 400.")
                 return func.HttpResponse("Request signature invalid!", status_code=400)
             else:
-                body = json.dumps(message)
-                logging.info(body)
-                post_data(body)
+                #body = json.dumps(message)
+                logging.info(message)
+                post_data(message)
                 logging.info("200 OK HTTPS")
                 return func.HttpResponse("200 OK HTTPS", status_code=200)
     logging.error("HTTP method not supported. Error code: 405.")
