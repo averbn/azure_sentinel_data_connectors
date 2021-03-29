@@ -86,14 +86,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         else:
             return func.HttpResponse("Auth failed", status_code=401)
     elif method == 'POST':
-        post_data = req.get_body().decode()
+        post_data = req.get_body()
         signature_header = req.headers.get('X-Hub-Signature')
         if signature_header:
             signature = parse_signature(signature_header)
             logging.info(signature)
             hmac = signature['sha1']
             logging.info(hmac)
-            message = json.loads(post_data)
+            message = post_data.decode('utf-8')
             logging.info(message)
             computed_hmac = hmac_sha1(message, AppSecret)
             logging.info(computed_hmac)
@@ -102,7 +102,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 return func.HttpResponse("Request signature invalid!", status_code=400)
             else:
                 result = []
-                result.append(message)
+                result.append(json.loads(message))
                 post_data(json.dumps(result))
                 logging.info("200 OK HTTPS")
                 return func.HttpResponse("200 OK HTTPS", status_code=200)
