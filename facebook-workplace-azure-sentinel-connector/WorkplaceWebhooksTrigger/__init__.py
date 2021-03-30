@@ -49,7 +49,7 @@ def build_signature(customer_id, shared_key, date, content_length, method, conte
     return authorization
 
 
-def post_data(body):
+def post_data_to_sentinel(body):
     method = 'POST'
     content_type = 'application/json'
     resource = '/api/logs'
@@ -85,14 +85,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         else:
             return func.HttpResponse("Auth failed", status_code=401)
     elif method == 'POST':
-        post_data = req.get_body()
+        post_req_data = req.get_body()
         signature_header = req.headers.get('X-Hub-Signature')
         if signature_header:
             signature = parse_signature(signature_header)
             logging.info(signature)
             hmac = signature['sha1']
             logging.info(hmac)
-            message = post_data.decode('utf-8')
+            message = post_req_data.decode('utf-8')
             logging.info(message)
             computed_hmac = hmac_sha1(message, AppSecret)
             logging.info(computed_hmac)
@@ -101,7 +101,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 return func.HttpResponse("Request signature invalid!", status_code=400)
             else:
                 message = json.loads(message)
-                post_data(json.dumps(message))
+                post_data_to_sentinel(json.dumps(message))
                 logging.info("200 OK HTTPS")
                 return func.HttpResponse("200 OK HTTPS", status_code=200)
     logging.error("HTTP method not supported. Error code: 405.")
