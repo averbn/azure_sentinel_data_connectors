@@ -9,6 +9,7 @@ import base64
 import requests
 import datetime
 
+
 AppSecret = os.environ['WorkplaceAppSecret']
 VerifyToken = os.environ['WorkplaceVerifyToken']
 customer_id = os.environ['WorkspaceID']
@@ -22,6 +23,7 @@ pattern = r'https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$'
 match = re.match(pattern,str(logAnalyticsUri))
 if(not match):
     raise Exception("Workplace_Facebook: Invalid Log Analytics Uri.")
+
 
 def hmac_sha1(message, secret):
     message = bytes(message, 'utf-8')
@@ -73,7 +75,6 @@ def post_data_to_sentinel(body):
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request. Start of processing.')
-
     method = req.method
     params = req.params
     if method == 'GET':
@@ -89,13 +90,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         signature_header = req.headers.get('X-Hub-Signature')
         if signature_header:
             signature = parse_signature(signature_header)
-            logging.info(signature)
             hmac = signature['sha1']
-            logging.info(hmac)
             message = post_req_data.decode('utf-8')
-            logging.info(message)
             computed_hmac = hmac_sha1(message, AppSecret)
-            logging.info(computed_hmac)
             if hmac != computed_hmac:
                 logging.error("Request signature invalid. Error code: 400.")
                 return func.HttpResponse("Request signature invalid!", status_code=400)
