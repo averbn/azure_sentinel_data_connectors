@@ -155,7 +155,7 @@
                         "WorkspaceKey": "[parameters('WorkspaceKey')]",
                         "WorkplaceAppSecret": "[parameters('WorkplaceAppSecret')]",
                         "WorkplaceVerifyToken": "[parameters('WorkplaceVerifyToken')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/facebook-workplace-azure-sentinel-connector/FacebookWorkplaceWebhooksSentinelConn.zip?raw=true"
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/facebook-workplace-azure-sentinel-connector/WorkplaceFacebookWebhooksSentinelConn.zip?raw=true"
                     }
                 }
             ]
