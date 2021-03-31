@@ -16,11 +16,11 @@
             "type": "securestring",
             "defaultValue": "<workspaceKey>"
         },
-        "WorkplaceAppSecret": {
+        "WorkplaceForFacebookAppSecret": {
             "type": "securestring",
             "defaultValue": "<WorkplaceAppSecret>"
         },
-        "WorkplaceVerifyToken": {
+        "WorkplaceForFacebookVerifyToken": {
             "type": "securestring",
             "defaultValue": "<WorkplaceVerifyToken>"
         }
@@ -153,8 +153,8 @@
                         "logAnalyticsUri": "[variables('LogAnaltyicsUri')]",
                         "WorkspaceID": "[parameters('WorkspaceID')]",
                         "WorkspaceKey": "[parameters('WorkspaceKey')]",
-                        "WorkplaceAppSecret": "[parameters('WorkplaceAppSecret')]",
-                        "WorkplaceVerifyToken": "[parameters('WorkplaceVerifyToken')]",
+                        "WorkplaceForFacebookAppSecret": "[parameters('WorkplaceForFacebookAppSecret')]",
+                        "WorkplaceForFacebookVerifyToken": "[parameters('WorkplaceForFacebookVerifyToken')]",
                         "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/facebook-workplace-azure-sentinel-connector/WorkplaceFacebookWebhooksSentinelConn.zip?raw=true"
                     }
                 }
