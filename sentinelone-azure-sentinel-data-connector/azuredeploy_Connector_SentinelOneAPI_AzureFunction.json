@@ -16,13 +16,9 @@
             "type": "securestring",
             "defaultValue": "<workspaceKey>"
         },
-        "SentinelOneUser": {
-            "type": "string",
-            "defaultValue": "<SentinelOneUser>"
-        },
-        "SentinelOnePassword": {
+        "SentinelOneAPIToken": {
             "type": "securestring",
-            "defaultValue": "<SentinelOnePassword>"
+            "defaultValue": "<SentinelOneUser>"
         },
         "SentinelOneUrl": {
             "type": "string",
@@ -156,8 +152,7 @@
                         "logAnalyticsUri": "[variables('LogAnaltyicsUri')]",
                         "WorkspaceID": "[parameters('WorkspaceID')]",
                         "WorkspaceKey": "[parameters('WorkspaceKey')]",
-                        "SentinelOneUser": "[parameters('SentinelOneUser')]",
-                        "SentinelOnePassword": "[parameters('SentinelOnePassword')]",
+                        "SentinelOneAPIToken": "[parameters('SentinelOneAPIToken')]",
                         "SentinelOneUrl": "[parameters('SentinelOneUrl')]",
                         "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/sentinelone-azure-sentinel-data-connector/SentinelOneAPISentinelConn.zip?raw=true"
                     }
