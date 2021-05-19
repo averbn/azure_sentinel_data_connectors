@@ -43,13 +43,12 @@ class SOne():
         current_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=10)
         state = StateManager(connection_string)
         past_time = state.get()
-        past_time = None
         if past_time is not None:
             logging.info("The last time point is: {}".format(past_time))
             logging.info('Trying to get events for period: {} - {}'.format(self.from_date, self.to_date))
         else:
             logging.info("There is no last time point, trying to get events for last day.")
-            past_time = (current_time - datetime.timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            past_time = (current_time - datetime.timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         state.post(current_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
         return (past_time, current_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
     
