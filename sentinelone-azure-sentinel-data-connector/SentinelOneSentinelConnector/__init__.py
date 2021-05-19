@@ -99,7 +99,7 @@ class SOne():
                     "updatedAt__gt": self.from_date,
                     "updatedAt__lt": self.to_date
                 }
-            print("Getting report: {}".format(api_req_id))
+            logging.info("Getting report: {}".format(api_req_id))
             next_page_token = self.get_report(report_type_suffix = api_req, report_type_name = api_req_name, params = api_req_params)
             while next_page_token:
                 api_req_params.update({"cursor": next_page_token})
