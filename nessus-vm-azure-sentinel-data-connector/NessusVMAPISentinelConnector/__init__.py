@@ -11,6 +11,7 @@ import logging
 from .state_manager import StateManager
 import urllib3
 import re
+from requests.packages.urllib3.util.retry import Retry
 
 customer_id = os.environ['WorkspaceID'] 
 shared_key = os.environ['WorkspaceKey']
@@ -40,22 +41,32 @@ def generate_date():
     current_time = datetime.datetime.utcnow().replace(second=0, microsecond=0)
     state = StateManager(connection_string=connection_string)
     past_time = state.get()
+    past_time = None
     if past_time is not None:
         logging.info("The last time point is: {}".format(past_time))
     else:
         logging.info("There is no last time point, trying to get scans information for last 24 hours.")
-        past_time = (current_time - datetime.timedelta(hours=2400)).strftime("%s")
+        past_time = (current_time - datetime.timedelta(hours=24)).strftime("%s")
     state.post(current_time.strftime("%s"))
     return (past_time, current_time.strftime("%s"))
 
 
 def get_query(sub_req, start_time):
+    retries = Retry(
+        total=3,
+        status_forcelist={429, 501, 502, 503, 504},
+        backoff_factor=1,
+        respect_retry_after_header=True
+    )
+    adapter = requests.adapters.HTTPAdapter(max_retries=retries)
+    session = requests.Session()
+    session.mount('https://', adapter)
     if start_time is not None:
         params = {"last_modification_date": start_time}
     else:
         params = {}
     try:
-        r = requests.get(url="{}/{}".format(url, sub_req),
+        r = session.get(url="{}/{}".format(url, sub_req),
                          headers=headers,
                          verify=verify,
                          params=params
@@ -64,8 +75,6 @@ def get_query(sub_req, start_time):
             return r
         elif r.status_code == 401:
             logging.error("The authentication credentials are incorrect or missing. Error code: {}".format(r.status_code))
-        elif r.status_code == 429:
-            logging.error("Too many requests. Error code: {}".format(r.status_code))
         else:
             logging.error("Something wrong. Error code: {}".format(r.status_code))
     except Exception as err:
