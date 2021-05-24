@@ -33,7 +33,8 @@
     "variables": {
         "FunctionName": "[concat(toLower(parameters('FunctionName')), uniqueString(resourceGroup().id))]",
         "StorageSuffix": "[environment().suffixes.storage]",
-        "LogAnaltyicsUri": "[replace(environment().portal, 'https://portal', concat('https://', toLower(parameters('WorkspaceID')), '.ods.opinsights'))]"
+        "LogAnaltyicsUri": "[replace(environment().portal, 'https://portal', concat('https://', toLower(parameters('WorkspaceID')), '.ods.opinsights'))]",
+        "hostingPlanName": "[concat(toLower(parameters('FunctionName')), uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
@@ -124,7 +125,8 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', tolower(variables('FunctionName')))]",
-                "[resourceId('Microsoft.Insights/components', variables('FunctionName'))]"
+                "[resourceId('Microsoft.Insights/components', variables('FunctionName'))]",
+                "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]"
             ],
             "kind": "functionapp,linux",
             "identity": {
@@ -136,6 +138,7 @@
                 "clientAffinityEnabled": true,
                 "alwaysOn": true,
                 "reserved": true,
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
                 "siteConfig": {
                     "linuxFxVersion": "python|3.8"
                 }
@@ -165,6 +168,20 @@
                 }
             ]
         },
+        {
+    "type": "Microsoft.Web/serverfarms",
+    "apiVersion": "2018-02-01",
+    "name": "[variables('hostingPlanName')]",
+    "location": "[resourceGroup().location]",
+    "kind": "Linux",
+    "sku": {
+        "name": "S1",
+        "tier": "Standard",
+        "size": "S1",
+        "family": "S",
+        "capacity": 1
+    }
+},
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2019-06-01",
