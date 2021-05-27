@@ -41,7 +41,6 @@ def generate_date():
     current_time = datetime.datetime.utcnow().replace(second=0, microsecond=0)
     state = StateManager(connection_string=connection_string)
     past_time = state.get()
-    past_time = None
     if past_time is not None:
         logging.info("The last time point is: {}".format(past_time))
     else:
@@ -111,6 +110,7 @@ def get_result(start_time):
                                         "vulnerability_plugin_name": vulnerability_detail.get("plugin_name"),
                                         "vulnerability_severity": vulnerability_detail.get("severity"),
                                         "vulnerability_cpe": vulnerability_detail.get("cpe"),
+                                        "vulnerability_count": vulnerability_detail.get("count"),
                                         "vulnerability_plugin_family": vulnerability_detail.get("plugin_family"),
                                         "type": "host_vulnerability_info"
                                         }
@@ -127,11 +127,11 @@ def get_result(start_time):
                                         "host_fqdn": (host_details.get("info")).get("host-fqdn"),
                                         "host_operating_system": (host_details.get("info")).get("operating-system"),
                                         "host_ip_addr": (host_details.get("info")).get("host-ip"),
-                                        "vulnerability_plugin_name": compliance_detail.get("plugin_name"),
-                                        "vulnerability_severity": compliance_detail.get("severity"),
-                                        "vulnerability_cpe": compliance_detail.get("cpe"),
-                                        "vulnerability_plugin_family": compliance_detail.get("plugin_family"),
-                                        "type": "host_vulnerability_info"
+                                        "compliance_plugin_name": compliance_detail.get("plugin_name"),
+                                        "complince_severity": compliance_detail.get("severity"),
+                                        "compliance_count": vulnerability_detail.get("count"),
+                                        "compliance_plugin_family": compliance_detail.get("plugin_family"),
+                                        "type": "host_compliance_info"
                                         }
                                 scan_result_events.append(result_event)
                 if post_data(json.dumps(scan_result_events)) is not None:
