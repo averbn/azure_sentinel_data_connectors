@@ -43,8 +43,7 @@ activities = [
             "user_accounts", 
             "context_aware_access", 
             "chrome", 
-            "data_studio", 
-            "keep"
+            "data_studio"
             ]
 
 if ((logAnalyticsUri in (None, '') or str(logAnalyticsUri).isspace())):    
