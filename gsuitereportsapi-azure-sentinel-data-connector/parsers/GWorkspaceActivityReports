@@ -12,7 +12,8 @@ union isfuzzy=true  GWorkspace_ReportsAPI_access_transparency_CL, GWorkspace_Rep
                     GWorkspace_ReportsAPI_mobile_CL, GWorkspace_ReportsAPI_rules_CL,
                     GWorkspace_ReportsAPI_saml_CL, GWorkspace_ReportsAPI_token_CL,
                     GWorkspace_ReportsAPI_user_accounts_CL, GWorkspace_ReportsAPI_context_aware_access_CL,
-                    GWorkspace_ReportsAPI_chrome_CL, GWorkspace_ReportsAPI_data_studio_CL
+                    GWorkspace_ReportsAPI_chrome_CL, GWorkspace_ReportsAPI_data_studio_CL,
+                    GWorkspace_ReportsAPI_keep_CL
 | extend 
         AccountState=column_ifexists('ACCOUNT_STATE_s', ''),
         ActorCallerType=column_ifexists('actor_callerType_s', ''),
@@ -105,6 +106,7 @@ union isfuzzy=true  GWorkspace_ReportsAPI_access_transparency_CL, GWorkspace_Rep
         Visibility=column_ifexists('visibility_s', ''),
         VisibilityChange=column_ifexists('visibility_change_s', '')
 | project 
+        TimeGenerated,
         AccountState,
         ActorCallerType,
         ActorEmail,
