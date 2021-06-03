@@ -2,7 +2,7 @@
     "id": "JuniperIDP",
     "title": "Juniper IDP",
     "publisher": "Juniper",
-    "descriptionMarkdown": "The [Juniper IDP](https://www.juniper.net/) data connector provides the capability to ingest [Juniper IDP events](https://www.juniper.net/documentation/us/en/software/junos/idp-policy/topics/topic-map/security-idp-overview.html) into Azure Sentinel.",
+    "descriptionMarkdown": "The [Juniper](https://www.juniper.net/) IDP data connector provides the capability to ingest [Juniper IDP](https://www.juniper.net/documentation/us/en/software/junos/idp-policy/topics/topic-map/security-idp-overview.html) events into Azure Sentinel.",
     "additionalRequirementBanner": "This data connector depends on a parser based on Kusto Function to work as expected. Follow the steps to use this Kusto Function alias **JuniperIDP** in queries and workbooks. [Follow steps to get this Kusto Function>](https://aka.ms/sentinel-JuniperIDP-parser)",
     "graphQueries": [
         {
