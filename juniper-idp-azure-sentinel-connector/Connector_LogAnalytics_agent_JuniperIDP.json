@@ -64,6 +64,12 @@
             "description": ">**NOTE:** This data connector depends on a parser based on a Kusto Function to work as expected. [Follow these steps](https://aka.ms/sentinel-JuniperIDP-parser) to create the Kusto Functions alias, **JuniperIDP**",
             "instructions": [ 
             ]    
+        }, 
+        { 
+            "title": "", 
+            "description": ">**NOTE:**  IDP OS 5.1 and above is supported by this data connector.",
+            "instructions": [ 
+            ]    
         },  
         { 
             "title": "1. Install and onboard the agent for Linux or Windows", 
