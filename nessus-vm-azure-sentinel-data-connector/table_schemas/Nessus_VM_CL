@@ -1,5 +1,5 @@
 {
-   "Name":"Jira_Audit_CL",
+   "Name":"NessusVM_CL",
    "Properties":[
       {
          "Name":"EventVendor",
@@ -10,63 +10,67 @@
          "Type":"String"
       },
       {
-         "Name":"id_d",
+         "Name":"vulnerability_count_d",
          "Type":"Double"
       },
       {
-         "Name":"summary_s",
+         "Name":"type_s",
          "Type":"String"
       },
       {
-         "Name":"remoteAddress_s",
+         "Name":"host_mac_addr_s",
          "Type":"String"
       },
       {
-         "Name":"authorKey_s",
+         "Name":"host_operating_system_s",
          "Type":"String"
       },
       {
-         "Name":"authorAccountId_s",
+         "Name":"vulnerability_cpe_s",
          "Type":"String"
       },
       {
-         "Name":"created_t",
-         "Type":"DateTime"
-      },
-      {
-         "Name":"eventSource_s",
+         "Name":"scan_name_s",
          "Type":"String"
       },
       {
-         "Name":"objectItem_id_s",
+         "Name":"scan_owner_s",
          "Type":"String"
       },
       {
-         "Name":"objectItem_name_s",
+         "Name":"scan_last_modification_date_d",
+         "Type":"Double"
+      },
+      {
+         "Name":"scan_creation_date_d",
+         "Type":"Double"
+      },
+      {
+         "Name":"host_start_time_s",
          "Type":"String"
       },
       {
-         "Name":"objectItem_typeName_s",
+         "Name":"host_end_time_s",
          "Type":"String"
       },
       {
-         "Name":"changedValues_s",
+         "Name":"host_fqdn_s",
          "Type":"String"
       },
       {
-         "Name":"associatedItems_s",
+         "Name":"host_ip_addr_s",
          "Type":"String"
       },
       {
-         "Name":"objectItem_parentId_s",
+         "Name":"vulnerability_plugin_name_s",
          "Type":"String"
       },
       {
-         "Name":"objectItem_parentName_s",
-         "Type":"String"
+         "Name":"vulnerability_severity_d",
+         "Type":"Double"
       },
       {
-         "Name":"Category",
+         "Name":"vulnerability_plugin_family_s",
          "Type":"String"
       }
    ]
