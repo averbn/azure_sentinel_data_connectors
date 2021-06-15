@@ -162,7 +162,7 @@
                         "InsightVMAPIKey": "[parameters('InsightVMAPIKey')]",
                         "InsightVMCloudRegion": "[parameters('InsightVMCloudRegion')]",
                         "logAnalyticsUri": "[variables('LogAnaltyicsUri')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/insight-vm-cloud-sentinel-data-connector/InsightVMCloudAPISentinelConn.zip?raw=true"
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/raw/main/insight-vm-cloud-azure-sentinel-data-connector/InsightVMCloudAPISentinelConn.zip"
                     }
                 }
             ]
