@@ -21,8 +21,8 @@
             "defaultValue": "<InsightVMAPIKey>"
         },
         "InsightVMCloudRegion": {
-            "type": "array",
-            "defaultValue": [
+            "type": "string",
+            "allowedValues": [
                             "us",
                             "us2",
                             "us3",
@@ -30,7 +30,11 @@
                             "ca",
                             "au",
                             "ap"
-                            ]
+                            ],
+        "defaultValue": "us",
+        "metadata": {
+            "description": "The region code for the region that hosts your data."
+            }
         }
     },
     "variables": {

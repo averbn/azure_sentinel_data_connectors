@@ -140,12 +140,11 @@ class InsightVMAPIv4integration:
         current_time = datetime.datetime.utcnow().replace(second=0, microsecond=0)
         state = StateManager(connection_string=connection_string)
         past_time = state.get()
-        past_time = None
         if past_time is not None:
             logging.info("The last time point is: {}".format(past_time))
         else:
             logging.info("There is no last time point, trying to get events for last day.")
-            past_time = (current_time - datetime.timedelta(days=120)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            past_time = (current_time - datetime.timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
         state.post(current_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
         return (past_time, current_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
 
