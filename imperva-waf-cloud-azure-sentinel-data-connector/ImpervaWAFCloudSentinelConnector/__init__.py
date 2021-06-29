@@ -81,7 +81,6 @@ class ImpervaFilesHandler:
             if self.files_array is not None:
                 state = StateManager(connection_string=connection_string)
                 past_file = state.get()
-                past_file = None
                 if past_file is not None:
                     logging.info("The last file point is: {}".format(past_file))
                     index = self.files_array.index(past_file)
@@ -136,8 +135,6 @@ class ImpervaFilesHandler:
         events_arr = []
         if file_encryption_flag == -1:
             events_data = zlib.decompressobj().decompress(file_data).decode("utf-8")
-        #else:
-        #    key = file_header.split("key:")[1].splitlines()[0]
         if events_data is not None:
             for line in events_data.splitlines():
                 if "CEF" in line:

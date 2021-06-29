@@ -1,0 +1,9 @@
+{
+   "Name":"ImpervaWAFCloud_CL",
+   "Properties":[
+      {
+         "Name":"Message",
+         "Type":"String"
+      }
+   ]
+}
