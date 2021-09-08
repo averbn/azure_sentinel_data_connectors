@@ -160,6 +160,7 @@ def gen_chunks_to_object(data,chunksize=100):
 def gen_chunks(data,log_type):
     for chunk in gen_chunks_to_object(data, chunksize=2000):
         body = json.dumps(chunk)
+        logging.info(body)
         post_data(customer_id, shared_key,body,log_type)
 
 def main(mytimer: func.TimerRequest) -> None:
