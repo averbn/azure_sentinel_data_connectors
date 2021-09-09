@@ -33,7 +33,7 @@ if(not match):
 
 class TD_CAS():
 
-    def __init__(self, tuple):
+    def __init__(self, tuple, from_time, to_time):
         self.event = tuple[1]
         self.service = tuple[0]
         self.token = cas_token
@@ -99,7 +99,6 @@ def generate_date():
     state.post(current_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
     return (past_time, current_time.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
 
-from_time,to_time = generate_date()
 
 class Sentinel:
 
@@ -182,8 +181,9 @@ def main(mytimer: func.TimerRequest) -> None:
                     "ransomware",
                     "dlp"
                     ]
+    from_time,to_time = generate_date()
     all_combinations = list(itertools.product(service_array, event_array))
-    map_iterator = map(lambda x: TD_CAS(x),all_combinations)
+    map_iterator = map(lambda x: TD_CAS(x, from_time, to_time),all_combinations)
     for elem in map_iterator:
         sentinel = Sentinel()
         results_array = elem.get_result()
