@@ -152,9 +152,9 @@
                         "logAnalyticsUri": "[variables('LogAnaltyicsUri')]",
                         "WorkspaceID": "[parameters('WorkspaceID')]",
                         "WorkspaceKey": "[parameters('WorkspaceKey')]",
-                        "SentinelOneAPIToken": "[parameters('TrendMicroCASToken')]",
-                        "SentinelOneUrl": "[parameters('TrendMicroCASServiceURL')]",
-                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/blob/main/sentinelone-azure-sentinel-data-connector/TrendMicroCASAPISentinelConn.zip?raw=true"
+                        "TrendMicroCASToken": "[parameters('TrendMicroCASToken')]",
+                        "TrendMicroCASServiceURL": "[parameters('TrendMicroCASServiceURL')]",
+                        "WEBSITE_RUN_FROM_PACKAGE": "https://github.com/averbn/azure_sentinel_data_connectors/raw/main/tmcas-azure-sentinel-data-connector/TrendMicroCASAPISentinelConn.zip?raw=true"
                         
                     }
                 }
