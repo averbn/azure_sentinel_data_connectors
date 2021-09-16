@@ -131,21 +131,20 @@ def expand_data(obj):
     new_obj = []
     for event in obj:
         nested_events_arr = event["events"]
-        head_event_part = event.copy()
-        head_event_part.pop("events")
         for nested in nested_events_arr:
-            event = head_event_part
-        if 'name' in nested:
-            event.update({'event_name': nested["name"]})
-        if 'type' in nested:
-            event.update({'event_type': nested["type"]})
-        if 'parameters' in nested:
-            for parameter in nested["parameters"]:
-                if 'name' in parameter:
-                    for param_name in ["value", "boolValue", "multiValue", "multiMessageValue", "multiIntValue", "messageValue", "intValue"]:
-                        if param_name in parameter:
-                            event.update({parameter["name"]: parameter[param_name]})
-        new_obj.append(event)
+            head_event_part = event.copy()
+            head_event_part.pop("events")
+            if 'name' in nested:
+                head_event_part.update({'event_name': nested["name"]})
+            if 'type' in nested:
+                head_event_part.update({'event_type': nested["type"]})
+            if 'parameters' in nested:
+                for parameter in nested["parameters"]:
+                    if 'name' in parameter:
+                        for param_name in ["value", "boolValue", "multiValue", "multiMessageValue", "multiIntValue", "messageValue", "intValue"]:
+                            if param_name in parameter:
+                                head_event_part.update({parameter["name"]: parameter[param_name]})
+            new_obj.append(head_event_part)
     return new_obj
 
 def gen_chunks_to_object(data,chunksize=100):
@@ -160,7 +159,6 @@ def gen_chunks_to_object(data,chunksize=100):
 def gen_chunks(data,log_type):
     for chunk in gen_chunks_to_object(data, chunksize=2000):
         body = json.dumps(chunk)
-        logging.info(body)
         post_data(customer_id, shared_key,body,log_type)
 
 def main(mytimer: func.TimerRequest) -> None:
