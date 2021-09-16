@@ -1,9 +1,9 @@
 {
 	"id": "TrendMicroCAS",
-	"title": "TrendMicroCAS",
+	"title": "TrendMicro Cloud App Security",
 	"publisher": "TrendMicro",
-	"descriptionMarkdown": "The [Trend Micro Cloud App Security](https://www.trendmicro.com/en_be/business/products/user-protection/sps/email-and-collaboration/cloud-app-security.html) data connector provides the capability to retrieve security event logs of the services that Cloud App Security protects and more events into Azure Sentinel through the Log Retrieval API. Refer to API [documentation](https://docs.trendmicro.com/en-us/enterprise/cloud-app-security-integration-api-online-help/supported-cloud-app-/log-retrieval-api/get-security-logs.aspx) for more information. The connector provides ability to get events which helps to examine potential security risks, analyze your team's use of collaboration, diagnose configuration problems and more.",
-	"additionalRequirementBanner": "These queries and workbooks are dependent on a parser based on Kusto to work as expected. ​Follow the steps to use this Kusto functions alias **TMCAS** in queries and workbooks [Follow steps to get this Kusto functions>](https://aka.ms/sentinel-TMCASAPI-parser).",
+	"descriptionMarkdown": "The [TrendMicro Cloud App Security](https://www.trendmicro.com/en_be/business/products/user-protection/sps/email-and-collaboration/cloud-app-security.html) data connector provides the capability to retrieve security event logs of the services that Cloud App Security protects and more events into Azure Sentinel through the Log Retrieval API. Refer to API [documentation](https://docs.trendmicro.com/en-us/enterprise/cloud-app-security-integration-api-online-help/supported-cloud-app-/log-retrieval-api/get-security-logs.aspx) for more information. The connector provides ability to get events which helps to examine potential security risks, analyze your team's use of collaboration, diagnose configuration problems and more.",
+	"additionalRequirementBanner": ">This data connector depends on a parser based on a Kusto Function to work as expected [**TrendMicroCAS**](https://aka.ms/sentinel-TMCAS-parser) which is deployed with the Azure Sentinel Solution.",
 	"graphQueries": [{
 			"metricName": "Total data received",
 			"legend": "TrendMicroCAS_CL",
@@ -11,8 +11,8 @@
 		}
 	],
 	"sampleQueries": [{
-		"description": "Trend Micro CAS Events - All Activities.",
-		"query": "TMCAS\n | sort by TimeGenerated desc"
+		"description": "TrendMicro Cloud App Security Events - All Activities.",
+		"query": "TrendMicroCAS\n | sort by TimeGenerated desc"
 	}
 ],
 	"dataTypes": [{
@@ -28,7 +28,7 @@
 		}
 	],
 	"availability": {
-		"status": 2,
+		"status": 1,
 		"isPreview": true
 	},
 	"permissions": {
@@ -65,22 +65,22 @@
 	},
 	"instructionSteps": [{
 			"title": "",
-			"description": ">**NOTE:** This connector uses Azure Functions to connect to the Trend Micro Log Retrieval API to pull its logs into Azure Sentinel. This might result in additional data ingestion costs. Check the [Azure Functions pricing page](https://azure.microsoft.com/pricing/details/functions/) for details."
+			"description": ">**NOTE:** This connector uses Azure Functions to connect to the Azure Blob Storage API to pull logs into Azure Sentinel. This might result in additional costs for data ingestion and for storing data in Azure Blob Storage costs. Check the [Azure Functions pricing page](https://azure.microsoft.com/pricing/details/functions/) and [Azure Blob Storage pricing page](https://azure.microsoft.com/pricing/details/storage/blobs/) for details."
 		},
 		{
 			"title": "",
 			"description": ">**(Optional Step)** Securely store workspace and API authorization key(s) or token(s) in Azure Key Vault. Azure Key Vault provides a secure mechanism to store and retrieve key values. [Follow these instructions](https://docs.microsoft.com/azure/app-service/app-service-key-vault-references) to use Azure Key Vault with an Azure Function App."
 		},
 		{
-			"description": ">**NOTE:** This data connector depends on a parser based on a Kusto Function to work as expected. [Follow these steps](https://aka.ms/sentinel-TMCASAPI-parser) to create the Kusto functions alias, **TMCAS**"
+			"description": ">**NOTE:** This data connector depends on a parser based on a Kusto Function to work as expected [**TrendMicroCAS**](https://aka.ms/sentinel-TMCAS-parser) which is deployed with the Azure Sentinel Solution."
 		},
 		{
 			"title": "",
-			"description": "**STEP 1 - Configuration steps for the Trend Micro Log Retrieval API**\n\n Follow the instructions to obtain the credentials.\n\n1. Obtain the **TrendMicroCASToken** using the [documentation](https://docs.trendmicro.com/en-us/enterprise/cloud-app-security-integration-api-online-help/getting-started-with/generating-an-authen.aspx).\n2. Save credentials for using in the data connector."
+			"description": "**STEP 1 - Configuration steps for the TrendMicro Log Retrieval API**\n\n Follow the instructions to obtain the credentials.\n\n1. Obtain the **TrendMicroCASToken** using the [documentation](https://docs.trendmicro.com/en-us/enterprise/cloud-app-security-integration-api-online-help/getting-started-with/generating-an-authen.aspx).\n2. Save credentials for using in the data connector."
 		},
 		{
 			"title": "",
-			"description": "**STEP 2 - Choose ONE from the following two deployment options to deploy the connector and the associated Azure Function**\n\n>**IMPORTANT:** Before deploying the Trend Micro CAS data connector, have the Workspace ID and Workspace Primary Key (can be copied from the following).",
+			"description": "**STEP 2 - Choose ONE from the following two deployment options to deploy the connector and the associated Azure Function**\n\n>**IMPORTANT:** Before deploying the TrendMicro Cloud App Security data connector, have the Workspace ID and Workspace Primary Key (can be copied from the following).",
 			"instructions": [{
 					"parameters": {
 						"fillWith": [
@@ -103,11 +103,11 @@
 		},
 		{
 			"title": "Option 1 - Azure Resource Manager (ARM) Template",
-			"description": "Use this method for automated deployment of the Trend Micro CAS data connector using an ARM Tempate.\n\n1. Click the **Deploy to Azure** button below. \n\n\t[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/sentinel-TMCASAPI-azuredeploy)\n2. Select the preferred **Subscription**, **Resource Group** and **Location**. \n> **NOTE:** Within the same resource group, you can't mix Windows and Linux apps in the same region. Select existing resource group without Windows apps in it or create new resource group.\n3. Enter the **TrendMicroCASToken**, **TrendMicroCASServiceURL**  and deploy. \n4. Mark the checkbox labeled **I agree to the terms and conditions stated above**. \n5. Click **Purchase** to deploy."
+			"description": "Use this method for automated deployment of the TrendMicro Cloud App Security data connector using an ARM Tempate.\n\n1. Click the **Deploy to Azure** button below. \n\n\t[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/sentinel-TMCASAPI-azuredeploy)\n2. Select the preferred **Subscription**, **Resource Group** and **Location**. \n> **NOTE:** Within the same resource group, you can't mix Windows and Linux apps in the same region. Select existing resource group without Windows apps in it or create new resource group.\n3. Enter the **TrendMicroCASToken**, **TrendMicroCASServiceURL**  and deploy. \n4. Mark the checkbox labeled **I agree to the terms and conditions stated above**. \n5. Click **Purchase** to deploy."
 		},
 		{
 			"title": "Option 2 - Manual Deployment of Azure Functions",
-			"description": "Use the following step-by-step instructions to deploy the Trend Micro CAS data connector manually with Azure Functions (Deployment via Visual Studio Code)."
+			"description": "Use the following step-by-step instructions to deploy the TrendMicro Cloud App Security data connector manually with Azure Functions (Deployment via Visual Studio Code)."
 		},
 		{
 			"title": "",

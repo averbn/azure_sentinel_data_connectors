@@ -5,7 +5,7 @@
       "event":"security_risk_scan",
       "message":{
          "scan_type":"Manual scan",
-         "affected_user":"user@company.com",
+         "affected_user":"sanitized@sanitized.com",
          "location":"/eicar_com.zip",
          "detection_time":"2021-09-08T08:31:55.000Z",
          "triggered_policy_name":"Default Dropbox Policy ATP (Monitor Only)",
@@ -27,7 +27,7 @@
       "event":"security_risk_scan",
       "message":{
          "scan_type":"Manual scan",
-         "affected_user":"user@company.com",
+         "affected_user":"sanitized@sanitized.com",
          "location":"/eicar_com.zip",
          "detection_time":"2021-09-09T08:31:55.000Z",
          "triggered_policy_name":"ATP (Monitor Only)",
@@ -49,7 +49,7 @@
       "event":"security_risk_scan",
       "message":{
          "scan_type":"Manual scan",
-         "affected_user":"user@company.com",
+         "affected_user":"sanitized@sanitized.com",
          "location":"test2.zip",
          "detection_time":"2021-09-09T08:32:55.000Z",
          "triggered_policy_name":"Default(Monitor Only)",
