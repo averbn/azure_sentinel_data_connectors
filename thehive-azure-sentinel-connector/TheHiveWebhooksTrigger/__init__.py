@@ -9,7 +9,6 @@ import base64
 import requests
 import datetime
 
-TheHiveBearerToken = "TEST"
 TheHiveBearerToken = os.environ['TheHiveBearerToken']
 customer_id = os.environ['WorkspaceID']
 shared_key = os.environ['WorkspaceKey']
