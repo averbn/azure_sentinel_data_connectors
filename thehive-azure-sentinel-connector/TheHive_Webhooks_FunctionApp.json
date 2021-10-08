@@ -1,7 +1,7 @@
 {
-	"id": "TheHive",
-	"title": "TheHive",
-	"publisher": "Facebook",
+	"id": "TheHiveProjectTheHive",
+	"title": "TheHive Project - TheHive",
+	"publisher": "TheHive Project",
 	"descriptionMarkdown": "The [TheHive](http://thehive-project.org/) data connector provides the capability to ingest common TheHive events into Azure Sentinel through Webhooks. TheHive can notify external system of modification events (case creation, alert update, task assignment) in real time. When a change occurs in the TheHive, an HTTPS POST request with event information is sent to a callback data connector URL.  Refer to [Webhooks documentation](https://docs.thehive-project.org/thehive/legacy/thehive3/admin/webhooks/) for more information. The connector provides ability to get events which helps to examine potential security risks, analyze your team's use of collaboration, diagnose configuration problems and more.",
 	"additionalRequirementBanner": ">This data connector depends on a parser based on a Kusto Function to work as expected [**TheHive**](https://aka.ms/sentinel-TheHive-parser) which is deployed with the Azure Sentinel Solution.",
 	"graphQueries": [{
