@@ -61,13 +61,14 @@ def _create_s3_client():
                                     config=boto_config
                                     )
 
-def check_if_script_runs_too_long():
+def check_if_script_runs_too_long(script_start_time):
     now = int(time.time())
     duration = now - script_start_time
     max_duration = int(MAX_SCRIPT_EXEC_TIME_MINUTES * 60 * 0.85)
     return duration > max_duration
 
 async def main(mytimer: func.TimerRequest):
+    script_start_time = int(time.time())
     logging.info("Creating SQS connection")
     async with _create_sqs_client() as client:
         async with aiohttp.ClientSession() as session:
@@ -97,7 +98,7 @@ async def main(mytimer: func.TimerRequest):
                 except KeyboardInterrupt:
                     break
 
-                if check_if_script_runs_too_long():
+                if check_if_script_runs_too_long(script_start_time):
                     logging.info('Script is running too long. Stop processing new messages from queue.')
                     break
 
