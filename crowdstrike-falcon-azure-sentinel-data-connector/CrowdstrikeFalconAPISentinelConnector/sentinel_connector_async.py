@@ -92,7 +92,6 @@ class AzureSentinelConnectorAsync:
 
     async def _make_request(self, session, uri, body, headers):
         async with session.post(uri, data=body, headers=headers, ssl=False) as response:
-            await response.text()
             if not (200 <= response.status <= 299):
                 raise Exception("Error during sending events to Azure Sentinel. Response code: {}".format(response.status))
 
