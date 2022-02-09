@@ -10,7 +10,6 @@ import datetime
 import os
 import re
 import logging
-from .state_manager import StateManager
 
 insightvm_apikey = os.environ['InsightVMAPIKey']
 region = os.environ['InsightVMCloudRegion']
