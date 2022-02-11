@@ -9,8 +9,8 @@ import csv
 import os
 import sys
 import tempfile
-import azure.functions as func
 import re
+import azure.functions as func
 
 
 customer_id = os.environ['WorkspaceID'] 
@@ -25,7 +25,7 @@ object =  "EventLogFile"
 interval = "hourly"
 hours_interval = 1
 days_interval = 1
-url = "https://login.salesforce.com/services/oauth2/token"
+url = os.environ['SalesforceTokenUri']
 logAnalyticsUri = os.environ.get('logAnalyticsUri')
 
 if ((logAnalyticsUri in (None, '') or str(logAnalyticsUri).isspace())):    
@@ -34,7 +34,7 @@ if ((logAnalyticsUri in (None, '') or str(logAnalyticsUri).isspace())):
 pattern = r'https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$'
 match = re.match(pattern,str(logAnalyticsUri))
 if(not match):
-    raise Exception("Google Workspace Reports: Invalid Log Analytics Uri.")
+    raise Exception("Salesforce Service Cloud: Invalid Log Analytics Uri.")
 
 def _get_token():
     params = {
@@ -123,6 +123,7 @@ def gen_chunks_to_object(file_in_tmp_path, chunksize=100):
     field_names = [x if x != 'type' else 'type_' for x in field_names]
     reader = csv.DictReader(open(file_in_tmp_path), fieldnames=field_names)
     chunk = []
+    next(reader)
     for index, line in enumerate(reader):
         if (index % chunksize == 0 and index > 0):
             yield chunk
@@ -185,13 +186,14 @@ def post_data(customer_id, shared_key, body, log_type, chunk_count):
     content_length = len(body)
     signature = build_signature(customer_id, shared_key, rfc1123date, content_length, method, content_type, resource)
     uri = logAnalyticsUri + resource + '?api-version=2016-04-01'
+    
     headers = {
         'content-type': content_type,
         'Authorization': signature,
         'Log-Type': log_type,
         'x-ms-date': rfc1123date
     }
-    response = requests.post(uri,data=body, headers=headers)
+    response = requests.post(uri, data=body, headers=headers)
     if (response.status_code >= 200 and response.status_code <= 299):
         print('Accepted')
         logging.info("Chunk was processed({} events)".format(chunk_count))
