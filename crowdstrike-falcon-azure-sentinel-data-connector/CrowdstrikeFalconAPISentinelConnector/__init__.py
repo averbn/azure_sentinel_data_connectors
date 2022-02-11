@@ -15,7 +15,7 @@ import azure.functions as func
 
 WORKSPACE_ID = os.environ['WorkspaceID']
 SHARED_KEY = os.environ['WorkspaceKey']
-LOG_TYPE = "CrowdstrikeReplicatorTest1"
+LOG_TYPE = "CrowdstrikeReplicatorLogs"
 AWS_KEY = os.environ['AWS_KEY']
 AWS_SECRET = os.environ['AWS_SECRET']
 AWS_REGION_NAME = os.environ['AWS_REGION_NAME']
