@@ -1,0 +1,17 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "mytimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "*/5 * * * * *"
+    },
+      {
+      "name": "starter",
+      "type": "durableClient",
+      "direction": "in"
+    }
+
+  ]
+}
