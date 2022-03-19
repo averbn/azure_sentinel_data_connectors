@@ -22,18 +22,25 @@ connection_string = os.environ['AzureWebJobsStorage']
 chunksize = 2000
 logAnalyticsUri = os.environ.get('logAnalyticsUri')
 
+if dispatcher == "":
+    raise Exception("CyberArkEPMServerURL is missing")
+# if username or password
+
 if ((logAnalyticsUri in (None, '') or str(logAnalyticsUri).isspace())):
+    logging.warning("logAnalyticsUri is None, used default value.")
     logAnalyticsUri = 'https://' + customer_id + '.ods.opinsights.azure.com'
 
 pattern = r'https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$'
-match = re.match(pattern,str(logAnalyticsUri))
-if(not match):
+match = re.match(pattern, str(logAnalyticsUri))
+if (not match):
     raise Exception("CyberArkEPM: Invalid Log Analytics Uri.")
+
 
 def generate_date():
     current_time = datetime.utcnow().replace(second=0, microsecond=0) - timedelta(minutes=10)
     state = StateManager(connection_string=connection_string)
     past_time = state.get()
+    #past_time = None
     if past_time is not None:
         logging.info("The last time point is: {}".format(past_time))
     else:
@@ -42,14 +49,16 @@ def generate_date():
     state.post(current_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
     return past_time, current_time.strftime("%Y-%m-%dT%H:%M:%SZ")
 
+
 def build_signature(customer_id, shared_key, date, content_length, method, content_type, resource):
     x_headers = 'x-ms-date:' + date
     string_to_hash = method + "\n" + str(content_length) + "\n" + content_type + "\n" + x_headers + "\n" + resource
     bytes_to_hash = bytes(string_to_hash, encoding="utf-8")
     decoded_key = base64.b64decode(shared_key)
     encoded_hash = base64.b64encode(hmac.new(decoded_key, bytes_to_hash, digestmod=hashlib.sha256).digest()).decode()
-    authorization = "SharedKey {}:{}".format(customer_id,encoded_hash)
+    authorization = "SharedKey {}:{}".format(customer_id, encoded_hash)
     return authorization
+
 
 def post_data(chunk):
     body = json.dumps(chunk)
@@ -67,13 +76,21 @@ def post_data(chunk):
         'Log-Type': log_type,
         'x-ms-date': rfc1123date
     }
-    response = requests.post(uri,data=body, headers=headers)
-    if (response.status_code >= 200 and response.status_code <= 299):
-        logging.info("{} events was injected".format(len(chunk)))
-        return response.status_code
-    else:
-        logging.warn("Events are not processed into Azure. Response code: {}".format(response.status_code))
+    try:
+        response = requests.post(uri, data=body, headers=headers)
+
+        if 200 <= response.status_code <= 299:
+            logging.info("{} events was injected".format(len(chunk)))
+            return response.status_code
+        elif response.status_code == 401:
+            logging.error(
+                "The authentication credentials are incorrect or missing. Error code: {}".format(response.status_code))
+        else:
+            logging.error("Something wrong. Error code: {}".format(response.status_code))
         return None
+    except Exception as err:
+        logging.error("Something wrong. Exception error text: {}".format(err))
+
 
 def gen_chunks_to_object(data, chunk_size=100):
     chunk = []
@@ -84,9 +101,11 @@ def gen_chunks_to_object(data, chunk_size=100):
         chunk.append(line)
     yield chunk
 
+
 def gen_chunks(data):
     for chunk in gen_chunks_to_object(data, chunk_size=chunksize):
         post_data(chunk)
+
 
 def get_events(func_name, auth, filter_date, set_id, next_cursor="start"):
     events_json = func_name(epmserver=auth.json()["ManagerURL"],
@@ -101,16 +120,25 @@ def get_events(func_name, auth, filter_date, set_id, next_cursor="start"):
         events_json["events"] += response_json["events"]
     return events_json
 
+
 def main(mytimer: func.TimerRequest) -> None:
     if mytimer.past_due:
         logging.info('The timer is past due!')
+    logging.getLogger().setLevel(logging.INFO)
     logging.info('Starting program')
     start_time, end_time = generate_date()
     logging.info('Data processing. Period(UTC): {} - {}'.format(start_time, end_time))
-    auth = epmAuth(dispatcher=dispatcher, username=username, password=password)
-    sets_list = getSetsList(epmserver=dispatcher, epmToken=auth.json()['EPMAuthenticationResult'], authType='EPM')
+    try:
+        auth = epmAuth(dispatcher=dispatcher, username=username, password=password)
+        if auth.status_code == 401:
+            logging.error(
+            "The authentication credentials are incorrect or missing. Error code: {}".format(auth.status_code))
+            return
+        sets_list = getSetsList(epmserver=dispatcher, epmToken=auth.json()['EPMAuthenticationResult'], authType='EPM')
+    except Exception as err:
+        logging.error("CyberArkEPMServerURL is invalid")
+        return
     filter_date = '{"filter": "eventDate GE ' + str(start_time) + ' AND eventDate LE ' + end_time + '"}'
-
     for set_id in sets_list.json()["Sets"]:
         aggregated_events_json = get_events(func_name=getAggregatedEvents, auth=auth, filter_date=filter_date,
                                             set_id=set_id)
@@ -124,3 +152,4 @@ def main(mytimer: func.TimerRequest) -> None:
     for raw_event in raw_events:
         raw_event["event_type"] = "raw_event"
     gen_chunks(aggregated_events + raw_events)
+
