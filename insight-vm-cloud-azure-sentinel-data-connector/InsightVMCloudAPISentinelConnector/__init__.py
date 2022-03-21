@@ -100,10 +100,10 @@ class InsightVMAPIv4integration:
 
     def get_vulnerabilities_info_list(self, vulns_array):
         data = "data"
-        body = \
-            {
-            "vulnerability": f"id IN {vulns_array}"
-            }
+        # body = \
+        #     {
+        #     "vulnerability": f"id IN {vulns_array}"
+        #     }
         page_num = 0
         vulnerabilities_results = []
         while data is not None:
@@ -111,7 +111,7 @@ class InsightVMAPIv4integration:
                 r = self.session.post(url="{}/{}".format(self.base_url, "vulnerabilities"),
                                       headers=self.headers,
                                       verify=True,
-                                      data = json.dumps(body),
+                                      #data = json.dumps(body),
                                       params={
                                           "size": chunksize,
                                           "page": page_num
@@ -128,6 +128,7 @@ class InsightVMAPIv4integration:
                     logging.error("Error. Code: {}. Meaning: {}.".format(r.status_code, r.json().get("message")))
             except Exception as err:
                 logging.error("Something wrong. Exception error text: {}".format(err))
+        logging.info(vulnerabilities_results)
         return vulnerabilities_results
 
 class ProcessToSentinel:
