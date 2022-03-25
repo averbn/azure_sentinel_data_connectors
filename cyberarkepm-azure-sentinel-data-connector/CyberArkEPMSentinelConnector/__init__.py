@@ -4,7 +4,8 @@ import hashlib
 import hmac
 import base64
 import logging
-from .pyepm import getAggregatedEvents, getDetailedRawEvents, epmAuth, getSetsList
+from .pyepm import getAggregatedEvents, getDetailedRawEvents, epmAuth, getSetsList, getPolicyAuditRawEventDetails, \
+    getAggregatedPolicyAudits
 import os
 from datetime import datetime, timedelta
 import json
@@ -24,7 +25,6 @@ logAnalyticsUri = os.environ.get('logAnalyticsUri')
 
 if dispatcher == "":
     raise Exception("CyberArkEPMServerURL is missing")
-# if username or password
 
 if ((logAnalyticsUri in (None, '') or str(logAnalyticsUri).isspace())):
     logging.warning("logAnalyticsUri is None, used default value.")
@@ -40,7 +40,6 @@ def generate_date():
     current_time = datetime.utcnow().replace(second=0, microsecond=0) - timedelta(minutes=10)
     state = StateManager(connection_string=connection_string)
     past_time = state.get()
-    #past_time = None
     if past_time is not None:
         logging.info("The last time point is: {}".format(past_time))
     else:
@@ -113,11 +112,16 @@ def get_events(func_name, auth, filter_date, set_id, next_cursor="start"):
                             authType='EPM', setid=set_id['Id'],
                             data=filter_date,
                             next_cursor=next_cursor).json()
-
-    if events_json["nextCursor"]:
-        response_json = get_events(auth=auth, filter_date=filter_date, set_id=set_id, func_name=func_name,
-                                   next_cursor=events_json["nextCursor"])
-        events_json["events"] += response_json["events"]
+    if type(events_json) == list:
+        logging.info("Set - {} is empty.".format(set_id["Name"]))
+        return {'events': []}
+    else:
+        if events_json["nextCursor"]:
+            response_json = get_events(auth=auth, filter_date=filter_date, set_id=set_id, func_name=func_name,
+                                       next_cursor=events_json["nextCursor"])
+            events_json["events"] += response_json["events"]
+    for event in events_json["events"]:
+        event["set_name"] = set_id["Name"]
     return events_json
 
 
@@ -132,24 +136,38 @@ def main(mytimer: func.TimerRequest) -> None:
         auth = epmAuth(dispatcher=dispatcher, username=username, password=password)
         if auth.status_code == 401:
             logging.error(
-            "The authentication credentials are incorrect or missing. Error code: {}".format(auth.status_code))
+                "The authentication credentials are incorrect or missing. Error code: {}".format(auth.status_code))
             return
         sets_list = getSetsList(epmserver=dispatcher, epmToken=auth.json()['EPMAuthenticationResult'], authType='EPM')
     except Exception as err:
         logging.error("CyberArkEPMServerURL is invalid")
         return
     filter_date = '{"filter": "eventDate GE ' + str(start_time) + ' AND eventDate LE ' + end_time + '"}'
+    aggregated_events = []
+    raw_events = []
+    aggregated_policy_audits = []
+    policy_audit_raw_event_details = []
     for set_id in sets_list.json()["Sets"]:
-        aggregated_events_json = get_events(func_name=getAggregatedEvents, auth=auth, filter_date=filter_date,
-                                            set_id=set_id)
-        raw_events_json = get_events(func_name=getDetailedRawEvents, auth=auth, filter_date=filter_date, set_id=set_id)
+        logging.info("Collecting aggregated events from {}".format(set_id["Name"]))
+        aggregated_events += get_events(func_name=getAggregatedEvents, auth=auth, filter_date=filter_date,
+                                        set_id=set_id)["events"]
+        logging.info("Collecting raw events from {}".format(set_id["Name"]))
+        raw_events += get_events(func_name=getDetailedRawEvents,
+                                 auth=auth, filter_date=filter_date, set_id=set_id)["events"]
+        logging.info("Collecting aggregated policy audits from {}".format(set_id["Name"]))
+        aggregated_policy_audits += get_events(func_name=getAggregatedPolicyAudits,
+                                               auth=auth, filter_date=filter_date, set_id=set_id)["events"]
+        logging.info("Collecting policy audit raw event details from {}".format(set_id["Name"]))
+        policy_audit_raw_event_details += get_events(func_name=getPolicyAuditRawEventDetails,
+                                                     auth=auth, filter_date=filter_date, set_id=set_id)["events"]
 
     # Send data via data collector API
-    aggregated_events = aggregated_events_json["events"]
-    raw_events = raw_events_json["events"]
     for aggregated_event in aggregated_events:
         aggregated_event["event_type"] = "aggregated_events"
     for raw_event in raw_events:
         raw_event["event_type"] = "raw_event"
-    gen_chunks(aggregated_events + raw_events)
-
+    for aggregated_policy_audit in aggregated_policy_audits:
+        aggregated_policy_audit["event_type"] = "aggregated_policy_audits"
+    for policy_audit_raw_event_detail in policy_audit_raw_event_details:
+        policy_audit_raw_event_detail["event_type"] = "policy_audit_raw_event_details"
+    gen_chunks(aggregated_events + raw_events + aggregated_policy_audits + policy_audit_raw_event_details)
