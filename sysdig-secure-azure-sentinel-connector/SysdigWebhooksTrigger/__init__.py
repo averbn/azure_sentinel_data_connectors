@@ -76,19 +76,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     method = req.method
     if method == 'POST':
         post_req_data = req.get_body()
-        signature_header = req.headers.get('X-Hub-Signature')
-        if signature_header:
-            signature = parse_signature(signature_header)
-            hmac = signature['sha1']
+        signature_header = req.headers.get('Authorization')
+        if signature_header == 'Bearer ' + SysdigAppSecret:
             message = post_req_data.decode('utf-8')
-            computed_hmac = hmac_sha1(message, SysdigAppSecret)
-            if hmac != computed_hmac:
-                logging.error("Request signature invalid. Error code: 400.")
-                return func.HttpResponse("Request signature invalid!", status_code=400)
-            else:
-                message = json.loads(message)
-                post_data_to_sentinel(json.dumps(message))
-                logging.info("200 OK HTTPS")
-                return func.HttpResponse("200 OK HTTPS", status_code=200)
+            message = json.loads(message)
+            post_data_to_sentinel(json.dumps(message))
+            logging.info("200 OK HTTPS")
+            return func.HttpResponse("200 OK HTTPS", status_code=200)
+        else:            
+            logging.error("Request signature invalid. Error code: 400.")
+            return func.HttpResponse("Request signature invalid!", status_code=400)
     logging.error("HTTP method not supported. Error code: 405.")
     return func.HttpResponse("HTTP method not supported", status_code=405)
