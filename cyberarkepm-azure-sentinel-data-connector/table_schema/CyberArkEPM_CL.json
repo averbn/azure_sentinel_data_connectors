@@ -98,7 +98,7 @@
            "Type": "String"
        },
        {
-           "Name": "lastEventSourceName_s",
+           "Name": "lastEvent_SourceName_s",
            "Type": "String"
        },
        {
