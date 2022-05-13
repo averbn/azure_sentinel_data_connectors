@@ -1,0 +1,115 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "connectorName": {
+            "type": "string",
+            "defaultValue": "[newGuid()]"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.OperationalInsights/workspaces/',parameters('workspace'),'/providers/Microsoft.SecurityInsights/dataConnectors/',parameters('connectorName'))]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',parameters('connectorName'))]",
+            "apiVersion": "2021-03-01-preview",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+            "kind": "APIPolling",
+            "properties": {
+                "connectorUiConfig": {
+                    "title": "OneLogin Events",
+                    "publisher": "Microsoft",
+                    "descriptionMarkdown": "OneLogin Events",
+                    "graphQueriesTableName": "OneLogin_CL",
+                    "graphQueries": [
+                        {
+                            "metricName": "Total events received",
+                            "legend": "OneLogin Events",
+                            "baseQuery": "{{graphQueriesTableName}}"
+                        }
+                    ],
+                    "sampleQueries": [
+                        {
+                            "description": "All logs",
+                            "query": "{{graphQueriesTableName}}\n | take 10"
+                        }
+                    ],
+                    "dataTypes": [
+                        {
+                            "name": "{{graphQueriesTableName}}",
+                            "lastDataReceivedQuery": "{{graphQueriesTableName}}\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
+                        }
+                    ],
+                    "connectivityCriteria": [
+                        {
+                            "type": "SentinelKindsV2",
+                            "value": []
+                        }
+                    ],
+                    "availability": {
+                        "status": 1,
+                        "isPreview": true
+                    },
+                    "permissions": {
+                        "resourceProvider": [
+                            {
+                                "provider": "Microsoft.OperationalInsights/workspaces",
+                                "permissionsDisplayText": "read and write permissions are required.",
+                                "providerDisplayName": "Workspace",
+                                "scope": "Workspace",
+                                "requiredPermissions": {
+                                    "write": true,
+                                    "read": true,
+                                    "delete": true
+                                }
+                            }
+                        ]
+                    },
+                    "instructionSteps": [
+                        {
+                            "title": "OneLogin Events logs to Azure Sentinel",
+                            "description": "Enter Oauth2 app credentials. \n",
+                            "instructions": [
+                                {
+                                    "parameters": {
+                                        "enable": "true"
+                                    },
+                                    "type": "OAuth2"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "pollingConfig": {
+                    "auth": {
+                        "authType": "OAuth2",
+                        "tokenEndpoint": "https://socprime-dev.onelogin.com/auth/oauth2/v2/token",
+                        "tokenEndpointHeaders": {
+                            "Accept": "application/json"
+                        },
+                        "isClientSecretInHeader": false,
+                        "grantType": "client_credentials",
+                        "contentType": "application/json",
+                        "FlowName": "ClientCredentials" 
+                    },
+                    "request": {
+                        "apiEndpoint": "https://socprime-dev.onelogin.com/api/1/events",
+                        "httpMethod": "Get",
+                        "queryWindowInMin": 5,
+                        "rateLimitQPS": 50,
+                        "retryCount": 2,
+                        "timeoutInSeconds": 60,
+                    },
+                    "response": {
+                        "eventsJsonPaths": [
+                            "$.data"
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
